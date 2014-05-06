@@ -12,7 +12,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
-    //Tab titles
+    // Tab titles
     private String[] tabs = { "Catalogue", "Editor", "Cart" };
 
     @Override

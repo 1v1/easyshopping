@@ -2,12 +2,14 @@ package it.polito.easyshopping.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -16,11 +18,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.polito.easyshopping.app.CatalogueFragment;
 import it.polito.easyshopping.app.Product;
 import it.polito.easyshopping.app.R;
 
 /**
- * Created by jessica on 07/05/14.
+ * Created by jessica on 06/05/14.
  */
 public class CatalogueAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
@@ -47,7 +50,7 @@ public class CatalogueAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup viewGroup) {
+    public View getView(int position, View convertView, final ViewGroup viewGroup) {
         ViewHolder holder;
 
         if (convertView == null) {
@@ -62,7 +65,7 @@ public class CatalogueAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         ArrayList<String> sections = getSections();
-        holder.imageName.setText(map.get(sections.get(position)).get(position).getName());
+        holder.imageName.setText(sections.get(position));
         holder.littleDescription.setText("Something here...");
 
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +77,7 @@ public class CatalogueAdapter extends BaseAdapter {
         // get input stream
         InputStream inputStream = null;
         try {
-            inputStream = convertView.getContext().getAssets().open(map.get(sections.get(position)).get(position).getImagePath());
+            inputStream = convertView.getContext().getAssets().open(map.get(sections.get(position)).get(0).getImagePath());
         } catch (IOException e) {
             e.printStackTrace();
         }

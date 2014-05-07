@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import it.polito.easyshopping.adapter.SectionAdapter;
+import it.polito.easyshopping.adapter.CatalogueAdapter;
 
 /**
  * Created by jessica on 06/05/14.
@@ -43,7 +43,7 @@ public class CatalogueFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        listView.setAdapter(new SectionAdapter(getActivity().getApplicationContext(), map));
+        listView.setAdapter(new CatalogueAdapter(getActivity().getApplicationContext(), map));
     }
 
     public void getMap() {

@@ -12,6 +12,17 @@
       "mapPath": "-"
     },
     {
+          "name": "Another soft chair",
+          "description": "Description here",
+          "price": "€40",
+          "productID": "1",
+          "width": "50",
+          "depth": "40",
+          "set": "chairs",
+          "imagePath": "chair.png",
+          "mapPath": "-"
+    },
+    {
       "name": "Center table",
       "description": "Description here",
       "price": "€35",

@@ -1,7 +1,5 @@
 package it.polito.easyshopping.app;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,26 +18,32 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import it.polito.easyshopping.adapter.CatalogueAdapter;
+import it.polito.easyshopping.adapter.SectionAdapter;
 
 /**
  * Created by jessica on 06/05/14.
  */
 public class CatalogueFragment extends Fragment {
     private HashMap<String, ArrayList<Product>> map;
+    private ListView listView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_catalogue, container, false);
-        //TODO
-        ArrayList<Product> arrayProducts = new ArrayList<Product>();
-        Product product = new Product();
-        product.setName("Chair");
-        product.setImagePath("chair.png");
-        arrayProducts.add(product);
-        ListView listView = (ListView) rootView.findViewById(R.id.list);
-        listView.setAdapter(new CatalogueAdapter(getActivity(), arrayProducts));
+        getMap();
+//        ArrayList<Product> arrayProducts = new ArrayList<Product>();
+//        Product product = new Product();
+//        product.setName("Chair");
+//        product.setImagePath("chair.png");
+//        arrayProducts.add(product);
+        listView = (ListView) rootView.findViewById(R.id.list);
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        listView.setAdapter(new SectionAdapter(getActivity().getApplicationContext(), map));
     }
 
     public void getMap() {

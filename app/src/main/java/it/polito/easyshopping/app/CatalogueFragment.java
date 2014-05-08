@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import it.polito.easyshopping.adapter.CatalogueAdapter;
+import it.polito.easyshopping.adapter.ProductsAdapter;
 
 /**
  * Created by jessica on 06/05/14.
@@ -29,28 +31,22 @@ import it.polito.easyshopping.adapter.CatalogueAdapter;
 public class CatalogueFragment extends Fragment {
     private HashMap<String, ArrayList<Product>> map;
     private ListView listView;
-    private Runnable runPager;
-    private final Handler handler = new Handler();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_catalogue, container, false);
         getMap();
-        listView = (ListView) rootView.findViewById(R.id.list);
+        listView = (ListView) rootView.findViewById(R.id.list_catalogue);
         listView.setAdapter(new CatalogueAdapter(getActivity().getApplicationContext(), map));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                startFragment();
-//                runPager = new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        getFragmentManager().beginTransaction().add(R.id.products_frag,
-//                                ProductsFragment.instantiate(getActivity().getApplicationContext(),
-//                                        "it.polito.easyshopping.ProductsFragment")).commit();
-//                    }
-//                };
-                // handler.post(runPager);
+                String sectionSelected = ((TextView) view.findViewById(R.id.title)).getText().toString();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.frag_root_catalogue, new ProductsFragment());
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
         return rootView;
@@ -59,21 +55,6 @@ public class CatalogueFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-    }
-
-    public void startFragment() {
-        // Create new fragment and transaction
-        //Fragment newFragment = new ProductsFragment();
-        Fragment newFragment = ProductsFragment.newInstance();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.map, newFragment);
-        transaction.addToBackStack(null);
-
-        // Commit the transaction
-        transaction.commit();
     }
 
     public void getMap() {

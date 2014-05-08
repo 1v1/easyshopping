@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import it.polito.easyshopping.app.CartFragment;
 import it.polito.easyshopping.app.CatalogueFragment;
 import it.polito.easyshopping.app.MapFragment;
+import it.polito.easyshopping.app.RootCatalogueFragment;
 
 /**
  * Created by jessica on 06/05/14.
@@ -21,7 +22,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new CatalogueFragment();
+                return new RootCatalogueFragment();
             case 1:
                 return new MapFragment();
             case 2:

@@ -38,29 +38,12 @@ public class ProductsFragment extends Fragment {
 
     }
 
-    public static Fragment newInstance() {
-        ProductsFragment mFrgment = new ProductsFragment();
-        return mFrgment;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_products, container, false);
         //getMap();
        // listView = (ListView) rootView.findViewById(R.id.list);
         return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //listView.setAdapter(new ProductsAdapter(getActivity().getApplicationContext(), map));
-        //listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                startFragment();
-//            }
-//        });
     }
 
     public void getMap() {
@@ -143,92 +126,4 @@ public class ProductsFragment extends Fragment {
 
         return sb.toString();
     }
-
-    public void startFragment() {
-        // Create new fragment and transaction
-        Fragment newFragment = new ProductsFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.list, newFragment);
-        transaction.addToBackStack(null);
-
-        // Commit the transaction
-        transaction.commit();
-    }
-
-    private static class ProductsAdapter extends BaseAdapter {
-        private LayoutInflater mInflater;
-        private HashMap<String, ArrayList<Product>> map;
-
-        public ProductsAdapter(Context context, HashMap<String, ArrayList<Product>> map) {
-            this.mInflater = LayoutInflater.from(context);
-            this.map = map;
-        }
-
-        @Override
-        public int getCount() {
-            return map.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, final ViewGroup viewGroup) {
-            ViewHolder holder;
-
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.list_row, null);
-                holder = new ViewHolder();
-                holder.imageName = (TextView) convertView.findViewById(R.id.title);
-                //holder.littleDescription = (TextView) convertView.findViewById(R.id.description);
-                holder.image = (ImageView) convertView.findViewById(R.id.list_image);
-
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-            ArrayList<String> sections = getSections();
-            holder.imageName.setText(sections.get(position));
-            //holder.littleDescription.setText("Something here...");
-
-            // get input stream
-            InputStream inputStream = null;
-            try {
-                inputStream = convertView.getContext().getAssets().open(map.get(sections.get(position)).get(0).getImagePath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            // load image as Drawable
-            Drawable d = Drawable.createFromStream(inputStream, null);
-            // set image to ImageView
-            holder.image.setImageDrawable(d);
-
-            return convertView;
-        }
-
-        private ArrayList<String> getSections() {
-            ArrayList<String> sections = new ArrayList<String>();
-            for(Map.Entry entry : map.entrySet()) {
-                sections.add(entry.getKey().toString());
-            }
-            return sections;
-        }
-
-        static class ViewHolder {
-            TextView imageName;
-            TextView littleDescription;
-            ImageView image;
-        }
-    }
-
 }

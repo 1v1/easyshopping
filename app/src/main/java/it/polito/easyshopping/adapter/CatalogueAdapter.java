@@ -41,7 +41,7 @@ public class CatalogueAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return position;
+        return map.get(position);
     }
 
     @Override
@@ -68,12 +68,6 @@ public class CatalogueAdapter extends BaseAdapter {
         holder.imageName.setText(sections.get(position));
         holder.littleDescription.setText("Something here...");
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("CLICK", "CLICKEEEEEEEEEEED!!!");
-            }
-        });
         // get input stream
         InputStream inputStream = null;
         try {

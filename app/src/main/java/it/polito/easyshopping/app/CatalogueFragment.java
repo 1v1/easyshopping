@@ -1,11 +1,14 @@
 package it.polito.easyshopping.app;
 
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -26,24 +29,51 @@ import it.polito.easyshopping.adapter.CatalogueAdapter;
 public class CatalogueFragment extends Fragment {
     private HashMap<String, ArrayList<Product>> map;
     private ListView listView;
+    private Runnable runPager;
+    private final Handler handler = new Handler();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_catalogue, container, false);
         getMap();
-//        ArrayList<Product> arrayProducts = new ArrayList<Product>();
-//        Product product = new Product();
-//        product.setName("Chair");
-//        product.setImagePath("chair.png");
-//        arrayProducts.add(product);
         listView = (ListView) rootView.findViewById(R.id.list);
+        listView.setAdapter(new CatalogueAdapter(getActivity().getApplicationContext(), map));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                startFragment();
+//                runPager = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        getFragmentManager().beginTransaction().add(R.id.products_frag,
+//                                ProductsFragment.instantiate(getActivity().getApplicationContext(),
+//                                        "it.polito.easyshopping.ProductsFragment")).commit();
+//                    }
+//                };
+                // handler.post(runPager);
+            }
+        });
         return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        listView.setAdapter(new CatalogueAdapter(getActivity().getApplicationContext(), map));
+    }
+
+    public void startFragment() {
+        // Create new fragment and transaction
+        //Fragment newFragment = new ProductsFragment();
+        Fragment newFragment = ProductsFragment.newInstance();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.map, newFragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
     }
 
     public void getMap() {

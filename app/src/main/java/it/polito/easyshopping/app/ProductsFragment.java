@@ -1,6 +1,7 @@
 package it.polito.easyshopping.app;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,12 +28,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.polito.easyshopping.adapter.CatalogueAdapter;
+import it.polito.easyshopping.adapter.ProductsAdapter;
+
 /**
  * Created by jessica on 07/05/14.
  */
 public class ProductsFragment extends Fragment {
     private HashMap<String, ArrayList<Product>> map;
     private ListView listView;
+    public static final String PREFS_NAME = "MyPrefsFile";
 
     public ProductsFragment() {
 
@@ -41,8 +46,10 @@ public class ProductsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_products, container, false);
-        //getMap();
-       // listView = (ListView) rootView.findViewById(R.id.list);
+        SharedPreferences settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+        getMap();
+        listView = (ListView) rootView.findViewById(R.id.list_products);
+        listView.setAdapter(new ProductsAdapter(getActivity().getApplicationContext(), map, settings.getString("section", null)));
         return rootView;
     }
 

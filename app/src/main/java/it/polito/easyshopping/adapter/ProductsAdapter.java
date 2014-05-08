@@ -62,21 +62,22 @@ public class ProductsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.imageName.setText(products.get(position).getName());
-        //holder.littleDescription.setText("Something here...");
+        if (position <= products.size()) {
+            holder.imageName.setText(products.get(position).getName());
+            //holder.littleDescription.setText("Something here...");
 
-        // get input stream
-        InputStream inputStream = null;
-        try {
-            inputStream = convertView.getContext().getAssets().open(products.get(position).getImagePath());
-        } catch (IOException e) {
-            e.printStackTrace();
+            // get input stream
+            InputStream inputStream = null;
+            try {
+                inputStream = convertView.getContext().getAssets().open(products.get(position).getImagePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // load image as Drawable
+            Drawable d = Drawable.createFromStream(inputStream, null);
+            // set image to ImageView
+            holder.image.setImageDrawable(d);
         }
-        // load image as Drawable
-        Drawable d = Drawable.createFromStream(inputStream, null);
-        // set image to ImageView
-        holder.image.setImageDrawable(d);
-
         return convertView;
     }
 

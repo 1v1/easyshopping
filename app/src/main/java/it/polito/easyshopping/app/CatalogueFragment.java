@@ -1,5 +1,6 @@
 package it.polito.easyshopping.app;
 
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import it.polito.easyshopping.adapter.ProductsAdapter;
 public class CatalogueFragment extends Fragment {
     private HashMap<String, ArrayList<Product>> map;
     private ListView listView;
+    public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,6 +44,10 @@ public class CatalogueFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String sectionSelected = ((TextView) view.findViewById(R.id.title)).getText().toString();
+                SharedPreferences settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("section", sectionSelected);
+                editor.commit();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.frag_root_catalogue, new ProductsFragment());
                 transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

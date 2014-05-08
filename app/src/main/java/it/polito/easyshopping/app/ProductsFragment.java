@@ -39,17 +39,14 @@ public class ProductsFragment extends Fragment {
     private ListView listView;
     public static final String PREFS_NAME = "MyPrefsFile";
 
-    public ProductsFragment() {
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_products, container, false);
         SharedPreferences settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
         getMap();
+        ArrayList<Product> products = map.get(settings.getString("section", null));
         listView = (ListView) rootView.findViewById(R.id.list_products);
-        listView.setAdapter(new ProductsAdapter(getActivity().getApplicationContext(), map, settings.getString("section", null)));
+        listView.setAdapter(new ProductsAdapter(getActivity().getApplicationContext(), products));
         return rootView;
     }
 

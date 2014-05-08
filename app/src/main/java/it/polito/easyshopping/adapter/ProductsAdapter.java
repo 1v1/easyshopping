@@ -22,18 +22,18 @@ import it.polito.easyshopping.app.R;
  */
 public class ProductsAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
-    private HashMap<String, ArrayList<Product>> map;
+    private ArrayList<Product> products;
     private String section;
 
-    public ProductsAdapter(Context context, HashMap<String, ArrayList<Product>> map, String section) {
+
+    public ProductsAdapter(Context context, ArrayList<Product> products) {
         this.mInflater = LayoutInflater.from(context);
-        this.map = map;
-        this.section = section;
+        this.products = products;
     }
 
     @Override
     public int getCount() {
-        return map.size();
+        return products.size();
     }
 
     @Override
@@ -49,7 +49,6 @@ public class ProductsAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, final ViewGroup viewGroup) {
         ViewHolder holder;
-        ArrayList<Product> products = map.get(section);
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.list_row, null);
             holder = new ViewHolder();
@@ -62,7 +61,7 @@ public class ProductsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        if (position <= products.size()) {
+        if (position < products.size()) {
             holder.imageName.setText(products.get(position).getName());
             //holder.littleDescription.setText("Something here...");
 

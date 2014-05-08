@@ -63,7 +63,6 @@ public class ProductsAdapter extends BaseAdapter {
 
         if (position < products.size()) {
             holder.imageName.setText(products.get(position).getName());
-            //holder.littleDescription.setText("Something here...");
 
             // get input stream
             InputStream inputStream = null;

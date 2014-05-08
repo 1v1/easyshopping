@@ -66,7 +66,6 @@ public class CatalogueAdapter extends BaseAdapter {
         }
         ArrayList<String> sections = getSections();
         holder.imageName.setText(sections.get(position));
-        holder.littleDescription.setText("Something here...");
 
         // get input stream
         InputStream inputStream = null;

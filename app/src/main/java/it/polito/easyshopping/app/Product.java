@@ -7,18 +7,23 @@ public class Product {
     private String name;
     private String description;
     private String price;
+    private String productID;
     private String width;
     private String depth;
+    private String set;
     private String imagePath;
     private String mapPath;
 
-    public Product(String name, String description, String price, String width, String depth, String imagePath, String mapPath) {
+    public Product(String name, String description, String price, String productID, String width,
+                   String depth, String set, String imagePath, String mapPath) {
         super();
         this.name = name;
         this.description = description;
         this.price = price;
+        this.productID = productID;
         this.width = width;
         this.depth = depth;
+        this.set = set;
         this.imagePath = imagePath;
         this.mapPath = mapPath;
     }
@@ -38,12 +43,20 @@ public class Product {
         return price;
     }
 
+    public String getProductID() {
+        return productID;
+    }
+
     public String getWidth() {
         return width;
     }
 
     public String getDepth() {
         return depth;
+    }
+
+    public String getSet() {
+        return set;
     }
 
     public String getImagePath() {
@@ -66,12 +79,20 @@ public class Product {
         this.price = price;
     }
 
+    public void setProductID(String productID) {
+        this.productID = productID;
+    }
+
     public void setWidth(String width) {
         this.width = width;
     }
 
     public void setDepth(String depth) {
         this.depth = depth;
+    }
+
+    public void setSet(String set) {
+        this.set = set;
     }
 
     public void setImagePath(String imagePath) {

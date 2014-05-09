@@ -35,9 +35,9 @@ public class ProductsSearchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.fragment_products);
         ProductsSearchAdapter adapter = new ProductsSearchAdapter(ProductsSearchActivity.this, web, imageId);
-        list = (ListView)findViewById(R.id.lv_products_search);
+        list = (ListView) findViewById(R.id.list_products);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -78,7 +78,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Take appropriate action for each action item click
         switch (item.getItemId()) {
             case R.id.action_search:
-                // search action
+                allProducts();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -88,7 +88,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     /**
      * Launching new activity with all products
      * */
-    private void LocationFound() {
+    private void allProducts() {
         Intent i = new Intent(MainActivity.this, ProductsSearchActivity.class);
         startActivity(i);
     }

@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ProductsSearchActivity" android:label="@string/app_name"/>
 
         </application>
 

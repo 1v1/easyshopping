@@ -18,9 +18,10 @@ public class ProductsSearchAdapter extends ArrayAdapter<String> {
     private final Activity context;
     private final String[] web;
     private final Integer[] imageId;
+    private LayoutInflater mInflater;
     public ProductsSearchAdapter(Activity context,
                       String[] web, Integer[] imageId) {
-        super(context, R.layout.list_row_products_search, web);
+        super(context, R.layout.list_row, web);
         this.context = context;
         this.web = web;
         this.imageId = imageId;
@@ -28,9 +29,9 @@ public class ProductsSearchAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView= inflater.inflate(R.layout.list_row_products_search, null, true);
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.tv_product_search);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.iv_product_search);
+        View rowView= inflater.inflate(R.layout.list_row, null, true);
+        TextView txtTitle = (TextView) rowView.findViewById(R.id.title);
+        ImageView imageView = (ImageView) rowView.findViewById(R.id.list_image);
         txtTitle.setText(web[position]);
         imageView.setImageResource(imageId[position]);
         return rowView;

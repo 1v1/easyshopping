@@ -1,4 +1,4 @@
-package it.polito.easyshopping.it.polito.easyshopping.utils;
+package it.polito.easyshopping.utils;
 
 import android.content.Context;
 import android.util.Log;
@@ -55,6 +55,24 @@ public class JsonUtils {
             Log.d("EXCEPTION", "<json> - " + e.toString());
         }
         return map;
+    }
+
+    public ArrayList<Product> getAllProducts() {
+        ArrayList<Product> allProducts = new ArrayList<Product>();
+        String json = getStringJson();
+        try {
+            JSONObject stringJson = new JSONObject(json); // string to jsonObject
+            JSONArray products = stringJson.getJSONArray("products"); // array with query results
+            for (int i = 0; i < products.length(); i++) {
+                JSONObject result = products.getJSONObject(i);
+                Product product = createProduct(result);
+                allProducts.add(product);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.d("EXCEPTION", "<json> - " + e.toString());
+        }
+        return allProducts;
     }
 
     private Product createProduct(JSONObject result) {

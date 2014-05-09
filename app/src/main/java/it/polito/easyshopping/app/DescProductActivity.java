@@ -1,14 +1,12 @@
 package it.polito.easyshopping.app;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,9 +18,9 @@ import java.util.HashMap;
 import it.polito.easyshopping.utils.JsonUtils;
 
 /**
- * Created by jessica on 08/05/14.
+ * Created by jessica on 09/05/14.
  */
-public class DescProductFragment extends Fragment {
+public class DescProductActivity extends Activity {
     private ImageView imageView;
     private HashMap<String, ArrayList<Product>> map;
     private JsonUtils utils;
@@ -31,16 +29,17 @@ public class DescProductFragment extends Fragment {
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_details_product, container, false);
-        SharedPreferences settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_details_product);
+        SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
         set = settings.getString("set", null);
         productID = settings.getString("productID", null);
-        imageView = (ImageView) rootView.findViewById(R.id.iv_product);
-        tv_description = (TextView) rootView.findViewById(R.id.desc_product);
-        tv_dimensions = (TextView) rootView.findViewById(R.id.dim_product);
-        tv_price = (TextView) rootView.findViewById(R.id.price_product);
-        utils = new JsonUtils(getActivity().getApplicationContext());
+        imageView = (ImageView) findViewById(R.id.iv_product);
+        tv_description = (TextView) findViewById(R.id.desc_product);
+        tv_dimensions = (TextView) findViewById(R.id.dim_product);
+        tv_price = (TextView) findViewById(R.id.price_product);
+        utils = new JsonUtils(getApplicationContext());
         map = utils.getMap();
         setAttributesProduct();
         if (imagePath != null && description != null
@@ -48,7 +47,7 @@ public class DescProductFragment extends Fragment {
             // get input stream
             InputStream inputStream = null;
             try {
-                inputStream = rootView.getContext().getAssets().open(imagePath);
+                inputStream = getApplicationContext().getAssets().open(imagePath);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -60,7 +59,6 @@ public class DescProductFragment extends Fragment {
             tv_dimensions.setText("Dimensions (width x depth): " + width + "cm" + " x " + depth + "cm");
             tv_price.setText("Price: " + price);
         }
-        return rootView;
     }
 
     private void setAttributesProduct() {

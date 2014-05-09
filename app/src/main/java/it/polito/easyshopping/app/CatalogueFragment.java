@@ -1,11 +1,9 @@
 package it.polito.easyshopping.app;
 
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import it.polito.easyshopping.adapter.CatalogueAdapter;
-import it.polito.easyshopping.adapter.ProductsAdapter;
-import it.polito.easyshopping.it.polito.easyshopping.utils.JsonUtils;
+import it.polito.easyshopping.utils.JsonUtils;
 
 /**
  * Created by jessica on 06/05/14.

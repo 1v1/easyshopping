@@ -17,6 +17,7 @@
 
         <ImageView
             android:id="@+id/list_image"
+            android:src="@drawable/ic_launcher"
             android:contentDescription="@string/desc"
             android:layout_width="50dip"
             android:layout_height="50dip"/>

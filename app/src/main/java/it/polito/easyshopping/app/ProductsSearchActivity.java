@@ -5,11 +5,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,20 +25,25 @@ import it.polito.easyshopping.utils.JsonUtils;
  * Created by jessica on 09/05/14.
  */
 public class ProductsSearchActivity extends Activity {
-    ListView list;
+    private ListView list;
+    private ProductsSearchAdapter adapter;
+    private EditText inputSearch;
     private ArrayList<Product> allProducts;
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_products);
+        setContentView(R.layout.activity_search_results);
+
         JsonUtils utils = new JsonUtils(getApplicationContext());
         allProducts = utils.getAllProducts();
 
-        ProductsSearchAdapter adapter = new ProductsSearchAdapter(ProductsSearchActivity.this, allProducts);
+        adapter = new ProductsSearchAdapter(ProductsSearchActivity.this, allProducts);
         list = (ListView) findViewById(R.id.list_products);
+        inputSearch = (EditText) findViewById(R.id.inputSearch);
         list.setAdapter(adapter);
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -50,7 +58,27 @@ public class ProductsSearchActivity extends Activity {
             editor.commit();
             Intent i = new Intent(ProductsSearchActivity.this, DescProductActivity.class);
             startActivity(i);
-            //Toast.makeText(ProductsSearchActivity.this, "You Clicked at " + allProducts.get(+position), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        inputSearch.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                // When user changed the Text
+                ProductsSearchActivity.this.adapter.getFilter().filter(cs);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                          int arg3) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
             }
         });
     }
@@ -61,19 +89,5 @@ public class ProductsSearchActivity extends Activity {
         inflater.inflate(R.menu.activity_main_actions, menu);
 
         return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * On selecting action bar icons
-     * */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Take appropriate action for each action item click
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 }

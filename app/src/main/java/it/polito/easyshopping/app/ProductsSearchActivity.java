@@ -1,20 +1,19 @@
 package it.polito.easyshopping.app;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -42,7 +41,9 @@ public class ProductsSearchActivity extends Activity {
         adapter = new ProductsSearchAdapter(ProductsSearchActivity.this, allProducts);
         list = (ListView) findViewById(R.id.list_products);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
+        list.setTextFilterEnabled(true);
         list.setAdapter(adapter);
+
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -51,10 +52,12 @@ public class ProductsSearchActivity extends Activity {
             Product selectedProduct = allProducts.get(position);
             String productID = selectedProduct.getProductID();
             String set = selectedProduct.getSet();
+            String imagePath = selectedProduct.getImagePath();
             SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("productID", productID);
             editor.putString("set", set);
+            editor.putString("imagePath", imagePath); //VER DEPOIS
             editor.commit();
             Intent i = new Intent(ProductsSearchActivity.this, DescProductActivity.class);
             startActivity(i);
@@ -65,20 +68,29 @@ public class ProductsSearchActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                // When user changed the Text
                 ProductsSearchActivity.this.adapter.getFilter().filter(cs);
             }
 
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
                                           int arg3) {
-                // TODO Auto-generated method stub
-
             }
 
             @Override
             public void afterTextChanged(Editable arg0) {
-                // TODO Auto-generated method stub
+
+            }
+        });
+
+        inputSearch.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if(keyCode == KeyEvent.KEYCODE_DEL){
+                    adapter = new ProductsSearchAdapter(ProductsSearchActivity.this, allProducts);
+                    list.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
+                return false;
             }
         });
     }
@@ -86,8 +98,14 @@ public class ProductsSearchActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_main_actions, menu);
-
         return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public void onBackPressed() {
+        adapter = new ProductsSearchAdapter(ProductsSearchActivity.this, allProducts);
+        list.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
 }

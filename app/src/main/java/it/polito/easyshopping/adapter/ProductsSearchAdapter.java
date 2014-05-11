@@ -28,12 +28,13 @@ public class ProductsSearchAdapter extends ArrayAdapter<String> implements Filte
     private final Activity context;
     private LayoutInflater mInflater;
     private ArrayList<Product> allProducts;
+    private ArrayList<Product> tempProducts = new ArrayList<Product>();
     private Filter myFilter;
 
-    public ProductsSearchAdapter(Activity context, ArrayList<Product> allProducts) {
+    public ProductsSearchAdapter(Activity context, ArrayList<Product> displayedProducts) {
         super(context, R.layout.list_row);
         this.context = context;
-        this.allProducts = allProducts;
+        this.allProducts = displayedProducts;
     }
 
     @Override
@@ -64,17 +65,17 @@ public class ProductsSearchAdapter extends ArrayAdapter<String> implements Filte
             imageView.setImageDrawable(d);
         }
 
-        implementsFilter();
-
         return rowView;
     }
 
-    public void implementsFilter() {
+    @Override
+    public Filter getFilter() {
         myFilter = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
                 FilterResults results = new FilterResults();
                 ArrayList<Product> tempList = new ArrayList<Product>();
+
 //                if (allProducts == null) {
 //                    allProducts = new ArrayList<Product>(displayedProducts); // saves the original data in mOriginalValues
 //                }
@@ -87,7 +88,6 @@ public class ProductsSearchAdapter extends ArrayAdapter<String> implements Filte
                     charSequence = charSequence.toString().toLowerCase();
                     for (Product product : allProducts) {
                         String data = product.getName();
-                        //if (data.toLowerCase().startsWith(charSequence.toString())) {
                         if (data.toLowerCase().contains(charSequence.toString())) {
                             tempList.add(product);
                         }
@@ -102,17 +102,16 @@ public class ProductsSearchAdapter extends ArrayAdapter<String> implements Filte
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults results) {
-                allProducts = (ArrayList<Product>)results.values;
-                if (results.count > 0)
+
+                if (results.count > 0) {
+                    allProducts = (ArrayList<Product>)results.values;
                     notifyDataSetChanged();
-                else
+                }
+                else {
                     notifyDataSetInvalidated();
+                }
             }
         };
-    }
-
-    @Override
-    public Filter getFilter() {
         return myFilter;
     }
 }

@@ -28,7 +28,7 @@ public class ProductsSearchAdapter extends ArrayAdapter<String> implements Filte
     private final Activity context;
     private LayoutInflater mInflater;
     private ArrayList<Product> allProducts;
-    private ArrayList<Product> tempProducts = new ArrayList<Product>();
+    ArrayList<Product> tempList;
     private Filter myFilter;
 
     public ProductsSearchAdapter(Activity context, ArrayList<Product> displayedProducts) {
@@ -74,7 +74,7 @@ public class ProductsSearchAdapter extends ArrayAdapter<String> implements Filte
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
                 FilterResults results = new FilterResults();
-                ArrayList<Product> tempList = new ArrayList<Product>();
+                tempList = new ArrayList<Product>();
 
 //                if (allProducts == null) {
 //                    allProducts = new ArrayList<Product>(displayedProducts); // saves the original data in mOriginalValues
@@ -113,5 +113,9 @@ public class ProductsSearchAdapter extends ArrayAdapter<String> implements Filte
             }
         };
         return myFilter;
+    }
+
+    public ArrayList<Product> getTempList() {
+        return tempList;
     }
 }

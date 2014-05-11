@@ -81,7 +81,7 @@ public class JsonUtils {
             product.setName(result.getString("name"));
             product.setDescription(result.getString("description"));
             product.setPrice(result.getString("price"));
-            product.setProductID("productID");
+            product.setProductID(result.getString("productID"));
             product.setWidth(result.getString("width"));
             product.setDepth(result.getString("depth"));
             product.setSet(result.getString("set"));

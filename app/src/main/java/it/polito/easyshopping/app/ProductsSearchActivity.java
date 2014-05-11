@@ -28,6 +28,7 @@ public class ProductsSearchActivity extends Activity {
     private ProductsSearchAdapter adapter;
     private EditText inputSearch;
     private ArrayList<Product> allProducts;
+    private ArrayList<Product> tempList;
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
@@ -49,7 +50,12 @@ public class ProductsSearchActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-            Product selectedProduct = allProducts.get(position);
+            Product selectedProduct;
+            tempList = ProductsSearchActivity.this.adapter.getTempList();
+            if (tempList != null)
+                selectedProduct = tempList.get(position);
+            else
+                selectedProduct = allProducts.get(position);
             String productID = selectedProduct.getProductID();
             String set = selectedProduct.getSet();
             String imagePath = selectedProduct.getImagePath();
@@ -78,7 +84,6 @@ public class ProductsSearchActivity extends Activity {
 
             @Override
             public void afterTextChanged(Editable arg0) {
-
             }
         });
 
@@ -101,11 +106,11 @@ public class ProductsSearchActivity extends Activity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public void onBackPressed() {
-        adapter = new ProductsSearchAdapter(ProductsSearchActivity.this, allProducts);
-        list.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-    }
+//    @Override
+//    public void onBackPressed() {
+//        adapter = new ProductsSearchAdapter(ProductsSearchActivity.this, allProducts);
+//        list.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
+//    }
 
 }

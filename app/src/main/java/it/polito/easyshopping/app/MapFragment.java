@@ -2,31 +2,35 @@ package it.polito.easyshopping.app;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 /**
  * Created by jessica on 06/05/14.
  */
 public class MapFragment extends Fragment {
     private Button button;
+    public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -38,9 +42,7 @@ public class MapFragment extends Fragment {
             public void onClick(View view) {
                 // get prompts.xml view
                 LayoutInflater layoutInflater = LayoutInflater.from(rootView.getContext());
-
                 View promptView = layoutInflater.inflate(R.layout.input_dialog, null);
-
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(rootView.getContext());
 
                 // set prompts.xml to be the layout file of the alertdialog builder
@@ -57,8 +59,11 @@ public class MapFragment extends Fragment {
                                 ViewGroup layout = (ViewGroup) button.getParent();
                                 if (layout != null) { // for safety only as you are doing onClick
                                     layout.removeView(button);
+                                    button = null;
                                     Paint paint = new Paint();
-                                    paint.setColor(Color.parseColor("#CD5C5C"));
+                                    paint.setColor(Color.parseColor("#F4A460"));
+                                    paint.setStyle(Paint.Style.STROKE);
+                                    paint.setStrokeWidth(25);
 
                                     DisplayMetrics displaymetrics = new DisplayMetrics();
                                     getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -91,7 +96,6 @@ public class MapFragment extends Fragment {
 
                 // create an alert dialog
                 AlertDialog alertD = alertDialogBuilder.create();
-
                 alertD.show();
 
             }
@@ -105,7 +109,36 @@ public class MapFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // if a room is already created
         inflater.inflate(R.menu.main, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
     }
+    /**
+     * On selecting action bar icons
+     * */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Take appropriate action for each action item click
+        switch (item.getItemId()) {
+            case R.id.addButton:
+                if (button == null) {
+                    // setting shared preferences to manage the onItemClick in the ProductsSearch
+                    SharedPreferences settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("mapEditor", "enabled");
+                    editor.commit();
+                    allProducts();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void allProducts() {
+        Intent i = new Intent(getActivity(), ProductsSearchActivity.class);
+        getActivity().startActivity(i);
+    }
+
 }

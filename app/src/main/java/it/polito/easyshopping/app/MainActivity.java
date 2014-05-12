@@ -3,6 +3,7 @@ package it.polito.easyshopping.app;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -16,7 +17,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
-    // Tab titles
+    public static final String PREFS_NAME = "MyPrefsFile";
     private String[] tabs = { "Catalogue", "Editor", "Cart" };
 
     @Override
@@ -89,6 +90,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      * Launching new activity with all products
      * */
     private void allProducts() {
+        SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("mapEditor", "disabled");
+        editor.commit();
         Intent i = new Intent(MainActivity.this, ProductsSearchActivity.class);
         startActivity(i);
     }

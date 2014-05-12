@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,20 +53,30 @@ public class MapFragment extends Fragment {
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // get user input and set it to result
-                                Log.d("Width: ", input_width.getText().toString());
-                                Log.d("Depth: ", input_depth.getText().toString());
                                 ViewGroup layout = (ViewGroup) button.getParent();
-                                if (layout != null) { //for safety only as you are doing onClick
-                                   layout.removeView(button);
-                                   Paint paint = new Paint();
-                                   paint.setColor(Color.parseColor("#CD5C5C"));
-                                   Bitmap bg = Bitmap.createBitmap(600, 800, Bitmap.Config.ARGB_8888);
-                                   Canvas canvas = new Canvas(bg);
-                                   canvas.drawRect(0,0,Float.parseFloat(input_width.getText().toString()),
-                                           Float.parseFloat(input_depth.getText().toString()),paint);
-                                   LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
-                                   ll.setBackgroundDrawable(new BitmapDrawable(bg));
+                                if (layout != null) { // for safety only as you are doing onClick
+                                    layout.removeView(button);
+                                    Paint paint = new Paint();
+                                    paint.setColor(Color.parseColor("#CD5C5C"));
+
+                                    DisplayMetrics displaymetrics = new DisplayMetrics();
+                                    getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                                    int width = displaymetrics.widthPixels; // screen width
+                                    int height = displaymetrics.heightPixels; // screen height
+
+                                    float scale = parametrizingDimensions(width, height,
+                                            Float.parseFloat(input_width.getText().toString()), // rectangle width
+                                            Float.parseFloat(input_depth.getText().toString())); // rectangle depth
+
+                                    // creating the available space to draw
+                                    Bitmap bg = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                                    // creating the rectangle
+                                    Canvas canvas = new Canvas(bg);
+                                    canvas.drawRect(0, 0, width,
+                                            scale*Float.parseFloat(input_depth.getText().toString()), paint);
+
+                                    LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
+                                    ll.setBackgroundDrawable(new BitmapDrawable(bg));
                                 }
 
                             }
@@ -85,5 +96,9 @@ public class MapFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    public float parametrizingDimensions(int screenWidth, int screenHeight, float pictureWidth, float pictureDepth) {
+        return Math.min(screenWidth/pictureWidth, screenHeight/pictureDepth);
     }
 }

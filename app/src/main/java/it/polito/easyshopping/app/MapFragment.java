@@ -32,6 +32,7 @@ public class MapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         button = (Button) rootView.findViewById(R.id.button_map);
+        setHasOptionsMenu(true);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,5 +101,11 @@ public class MapFragment extends Fragment {
 
     public float parametrizingDimensions(int screenWidth, int screenHeight, float pictureWidth, float pictureDepth) {
         return Math.min(screenWidth/pictureWidth, screenHeight/pictureDepth);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

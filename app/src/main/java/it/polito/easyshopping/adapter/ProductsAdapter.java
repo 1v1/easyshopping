@@ -12,7 +12,6 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import it.polito.easyshopping.app.Product;
 import it.polito.easyshopping.app.R;

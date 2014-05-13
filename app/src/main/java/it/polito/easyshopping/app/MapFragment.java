@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -70,16 +71,24 @@ public class MapFragment extends Fragment {
                                     int width = displaymetrics.widthPixels; // screen width
                                     int height = displaymetrics.heightPixels; // screen height
 
-                                    float scale = parametrizingDimensions(width, height,
-                                            Float.parseFloat(input_width.getText().toString()), // rectangle width
-                                            Float.parseFloat(input_depth.getText().toString())); // rectangle depth
+                                    float imageWidth = Float.parseFloat(input_width.getText().toString());
+                                    float imageHeight = Float.parseFloat(input_depth.getText().toString());
+
+                                    float scale = parametrizingDimensions(width, height, imageWidth, imageHeight);
+
+                                    float newHeight = scale*Float.parseFloat(input_depth.getText().toString());
 
                                     // creating the available space to draw
                                     Bitmap bg = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                                    Bitmap image = BitmapFactory.decodeResource(getActivity().getResources(),
+                                            R.drawable.ic_launcher);
                                     // creating the rectangle
                                     Canvas canvas = new Canvas(bg);
-                                    canvas.drawRect(0, 0, width,
-                                            scale*Float.parseFloat(input_depth.getText().toString()), paint);
+                                    canvas.drawRect(0, 0, width, newHeight, paint);
+
+                                    //canvas.drawRect((width/2 - imageWidth/2), (newHeight - imageHeight/2), width/2, newHeight/2, paint);
+//                                    canvas.drawBitmap(image, width/2,
+//                                            (scale*Float.parseFloat(input_depth.getText().toString()))/2, paint);
 
                                     LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
                                     ll.setBackgroundDrawable(new BitmapDrawable(bg));

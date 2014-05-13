@@ -22,7 +22,11 @@
         android:id="@+id/rect">
     </LinearLayout>
 
-
+    <it.polito.easyshopping.app.ProductView
+        android:id="@+id/rectangle"
+        android:layout_width="30dp"
+        android:layout_height="80dp"
+        android:layout_alignParentTop="true" />
 </RelativeLayout>
 
 

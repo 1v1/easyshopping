@@ -24,12 +24,4 @@ public class ProductView extends View {
     public ProductView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
-
-    @Override
-    public void onDraw(Canvas canvas)
-    {
-        paint = new Paint();
-        paint.setColor(Color.MAGENTA);
-        canvas.drawRect(30f, 30f, 80f, 80f, paint);
-    }
 }

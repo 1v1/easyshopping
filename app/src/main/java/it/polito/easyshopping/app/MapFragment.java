@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * Created by jessica on 06/05/14.
@@ -32,11 +33,12 @@ import android.widget.LinearLayout;
 public class MapFragment extends Fragment {
     private Button button;
     private ProductView productView;
+    private View rootView;
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+        rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
         button = (Button) rootView.findViewById(R.id.button_map);
         setHasOptionsMenu(true);
@@ -69,10 +71,6 @@ public class MapFragment extends Fragment {
                                     paint.setStyle(Paint.Style.STROKE);
                                     paint.setStrokeWidth(25);
 
-                                    Paint movel = new Paint();
-                                    paint.setColor(Color.BLUE);
-
-
                                     DisplayMetrics displaymetrics = new DisplayMetrics();
                                     getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
                                     int width = displaymetrics.widthPixels; // screen width
@@ -92,18 +90,24 @@ public class MapFragment extends Fragment {
                                     // creating the rectangle
                                     Canvas canvas = new Canvas(bg);
                                     canvas.drawRect(0, 0, width, newHeight, paint);
-
-                                    productView = (ProductView) rootView.findViewById(R.id.rectangle);
-
+                                    productView = new ProductView(getActivity().getApplicationContext());
+                                    LinearLayout.LayoutParams parms
+                                            = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+                                    parms.leftMargin = 210;
+                                    parms.topMargin = 105;
+                                    parms.rightMargin = 210;
+                                    parms.bottomMargin = 900;
+                                    productView.setLayoutParams(parms);
+                                    productView.setBackgroundColor(Color.BLUE);
 //                                    canvas.drawRect(300,
 //                                            (newHeight/2 - imageHeight/2), 30, 30, paint);
 //                                    canvas.drawBitmap(image, width/2,
 //                                            (scale*Float.parseFloat(input_depth.getText().toString()))/2, paint);
 
                                     LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
+                                    ll.addView(productView);
                                     ll.setBackgroundDrawable(new BitmapDrawable(bg));
                                 }
-
                             }
                         })
                         .setNegativeButton("Cancel",

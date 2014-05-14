@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -71,8 +72,10 @@ public class ProductsSearchActivity extends Activity {
                 Intent i = new Intent(ProductsSearchActivity.this, DescProductActivity.class);
                 startActivity(i);
             } else {
-                // insert item in the editor
-
+                View viewEditor = getLayoutInflater().inflate(R.layout.fragment_map, null);
+                LinearLayout layout = (LinearLayout) viewEditor.findViewById(R.id.rect);
+                ProductView productView = new ProductView(getApplicationContext());
+                layout.addView(productView);
             }
 
             }

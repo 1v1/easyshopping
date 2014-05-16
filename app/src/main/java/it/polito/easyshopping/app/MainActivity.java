@@ -34,13 +34,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         viewPager.setOffscreenPageLimit(3);
         actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
+        int height = actionBar.getHeight();
         // Adding Tabs
         for (String tab_name : tabs) {
             actionBar.addTab(actionBar.newTab().setText(tab_name)
                     .setTabListener(this));
         }
-
+        int height2 = actionBar.getHeight();
         /**
          * on swiping the viewpager make respective tab selected
          * */

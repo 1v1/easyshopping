@@ -66,18 +66,14 @@ public class MapFragment extends Fragment {
                                 if (layout != null) { // for safety only as you are doing onClick
                                     layout.removeView(button);
                                     button = null;
-//                                    Paint paint = new Paint();
-//                                    paint.setColor(Color.parseColor("#F4A460"));
-//                                    paint.setStyle(Paint.Style.STROKE);
-//                                    paint.setStrokeWidth(25);
 
                                     DisplayMetrics displaymetrics = new DisplayMetrics();
                                     getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
                                     int width = displaymetrics.widthPixels; // screen width
                                     int height = displaymetrics.heightPixels; // screen height
 
-                                    float imageWidth = Float.parseFloat(input_width.getText().toString());
-                                    float imageHeight = Float.parseFloat(input_depth.getText().toString());
+                                    float imageWidth = Float.parseFloat(input_width.getText().toString()); // room width
+                                    float imageHeight = Float.parseFloat(input_depth.getText().toString()); // room height
 
                                     float scale = parametrizingDimensions(width, height, imageWidth, imageHeight);
 
@@ -89,30 +85,27 @@ public class MapFragment extends Fragment {
                                             R.drawable.ic_launcher);
                                     // creating the rectangle
                                     Canvas canvas = new Canvas(bg);
-                                    //canvas.drawRect(0, 0, width, newHeight, paint);
                                     RoomView room = new RoomView(getActivity(), width, newHeight);
                                     room.onDraw(canvas);
+
                                     productView = new ProductView(getActivity().getApplicationContext());
+
                                     LinearLayout.LayoutParams parms
                                             = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
                                     parms.leftMargin = 210;
-                                    parms.topMargin = 105;
+                                    parms.topMargin = 117;
                                     parms.rightMargin = 210;
-                                    parms.bottomMargin = 200;
+                                    parms.bottomMargin = 900;
                                     productView.setLayoutParams(parms);
                                     productView.setBackgroundColor(Color.BLUE);
-//                                    canvas.drawRect(300,
-//                                            (newHeight/2 - imageHeight/2), 30, 30, paint);
-//                                    canvas.drawBitmap(image, width/2,
-//                                            (scale*Float.parseFloat(input_depth.getText().toString()))/2, paint);
+
+                                    LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
+                                    ll.addView(productView);
+                                    ll.setBackgroundDrawable(new BitmapDrawable(bg));
 
                                     RelativeLayout mapLayout = (RelativeLayout) rootView.findViewById(R.id.mapEditor);
                                     mapLayout.addView(room);
                                     mapLayout.setBackgroundDrawable(new BitmapDrawable(bg));
-                                    room.addView(productView);
-//                                    LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
-//                                    ll.addView(productView);
-//                                    ll.setBackgroundDrawable(new BitmapDrawable(bg));
                                 }
                             }
                         })

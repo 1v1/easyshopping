@@ -43,8 +43,8 @@ public class RoomView extends ViewGroup {
         Paint paint = new Paint();
         paint.setColor(Color.parseColor("#F4A460"));
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(25);
+        paint.setStrokeWidth(15);
 
-        canvas.drawRect(0, 0, width, height, paint);
+        canvas.drawRect(0, 5, width, height, paint);
     }
 }

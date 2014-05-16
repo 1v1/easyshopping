@@ -1,6 +1,7 @@
 package it.polito.easyshopping.app;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -99,6 +101,10 @@ public class MapFragment extends Fragment {
                                     productView.setLayoutParams(parms);
                                     productView.setBackgroundColor(Color.BLUE);
 
+                                    productView.setOnTouchListener(new MyTouchListener());
+                                    room.setOnDragListener(new RoomView(getActivity()));
+
+
                                     LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
                                     ll.addView(productView);
                                     ll.setBackgroundDrawable(new BitmapDrawable(bg));
@@ -123,6 +129,21 @@ public class MapFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    // This defines your touch listener
+    private final class MyTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                view.setVisibility(View.INVISIBLE);
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     public float parametrizingDimensions(int screenWidth, int screenHeight, float pictureWidth, float pictureDepth) {

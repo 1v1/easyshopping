@@ -36,6 +36,7 @@ public class MapFragment extends Fragment {
     private Button button;
     private ProductView productView;
     private View rootView;
+    private RoomView room;
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
@@ -87,8 +88,9 @@ public class MapFragment extends Fragment {
                                             R.drawable.ic_launcher);
                                     // creating the rectangle
                                     Canvas canvas = new Canvas(bg);
-                                    RoomView room = new RoomView(getActivity(), width, newHeight);
+                                    room = new RoomView(getActivity(), width, newHeight);
                                     room.onDraw(canvas);
+                                    //int bottom = room.getBottom();
 
                                     productView = new ProductView(getActivity().getApplicationContext());
 
@@ -108,10 +110,6 @@ public class MapFragment extends Fragment {
                                     LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
                                     ll.addView(productView);
                                     ll.setBackgroundDrawable(new BitmapDrawable(bg));
-
-                                    RelativeLayout mapLayout = (RelativeLayout) rootView.findViewById(R.id.mapEditor);
-                                    mapLayout.addView(room);
-                                    mapLayout.setBackgroundDrawable(new BitmapDrawable(bg));
                                 }
                             }
                         })
@@ -129,6 +127,29 @@ public class MapFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        if (button == null) {
+            Bitmap bg = Bitmap.createBitmap(720, 360, Bitmap.Config.ARGB_8888); //test values
+            RelativeLayout mapLayout = (RelativeLayout) rootView.findViewById(R.id.mapEditor);
+            mapLayout.addView(room);
+            mapLayout.setBackgroundDrawable(new BitmapDrawable(bg));
+
+            Rect rectf = new Rect();
+            room.getLocalVisibleRect(rectf);
+
+            int bottom = rectf.bottom;
+            int left = rectf.left;
+
+            int bottom2 = room.getBottom();
+            int left2 = room.getLeft();
+
+            int bP = productView.getBottom();
+            int lP = productView.getLeft();
+        }
+        super.onResume();
     }
 
     // This defines your touch listener

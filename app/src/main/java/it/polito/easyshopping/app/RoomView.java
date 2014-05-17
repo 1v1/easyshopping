@@ -51,7 +51,6 @@ public class RoomView extends ViewGroup implements View.OnDragListener {
         paint.setColor(Color.parseColor("#F4A460"));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(15);
-
         canvas.drawRect(0, 5, width, height, paint);
     }
 
@@ -70,16 +69,8 @@ public class RoomView extends ViewGroup implements View.OnDragListener {
                 }
                 break;
             case DragEvent.ACTION_DROP:
-//                RelativeLayout container = (RelativeLayout) v;
-//                container.addView(view);
-                if(isViewContains(v)) {
-                    // Dropped, reassign View to ViewGroup
-                    View view = (View) event.getLocalState();
-                    ViewGroup owner = (ViewGroup) view.getParent();
-                    owner.removeView(view);
-                    view.setVisibility(View.VISIBLE);
-                }
-
+                // ver se o retangulo ta dentro do comodo.
+                v.setVisibility(View.VISIBLE);
                 break;
             case DragEvent.ACTION_DRAG_ENDED:
                 if (dropEventNotHandled(event)) {
@@ -93,12 +84,5 @@ public class RoomView extends ViewGroup implements View.OnDragListener {
 
     private boolean dropEventNotHandled(DragEvent dragEvent) {
         return !dragEvent.getResult();
-    }
-
-    private boolean isViewContains(View view) {
-        int[] l = new int[2];
-        view.getLocationOnScreen(l);
-        Rect rect = new Rect(l[0], l[1], l[0] + view.getWidth(), l[1] + view.getHeight());
-        return rect.contains(l[0], l[1]);
     }
 }

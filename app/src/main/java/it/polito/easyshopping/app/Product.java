@@ -31,6 +31,14 @@ public class Product {
     public Product() {
     }
 
+    public float getScreenWidth(float realRoomWidth, float screenRoomWidth) {
+        return (Float.parseFloat(this.width) * screenRoomWidth)/realRoomWidth;
+    }
+
+    public float getScreenHight(float realRoomHeight, float screenRoomHeight) {
+        return (Float.parseFloat(this.depth) * screenRoomHeight)/realRoomHeight;
+    }
+
     public String getName() {
         return name;
     }

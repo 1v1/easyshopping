@@ -5,8 +5,8 @@
       "description": "Description here",
       "price": "€40",
       "productID": "1",
-      "width": "50",
-      "depth": "40",
+      "width": "10",
+      "depth": "20",
       "set": "chairs",
       "imagePath": "chair.png",
       "mapPath": "-"

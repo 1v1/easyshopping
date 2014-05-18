@@ -17,6 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +30,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+
+import it.polito.easyshopping.utils.JsonUtils;
+
 /**
  * Created by jessica on 06/05/14.
  */
@@ -37,6 +44,10 @@ public class MapFragment extends Fragment {
     private ProductView productView;
     private View rootView;
     private RoomView room;
+    private SharedPreferences settings;
+    private SharedPreferences.Editor editor;
+    private int width, height;
+    private float imageWidth, imageHeight, scale, newHeight;
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
@@ -72,15 +83,15 @@ public class MapFragment extends Fragment {
 
                                     DisplayMetrics displaymetrics = new DisplayMetrics();
                                     getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-                                    int width = displaymetrics.widthPixels; // screen width
-                                    int height = displaymetrics.heightPixels; // screen height
+                                    width = displaymetrics.widthPixels; // screen width
+                                    height = displaymetrics.heightPixels; // screen height
 
-                                    float imageWidth = Float.parseFloat(input_width.getText().toString()); // room width
-                                    float imageHeight = Float.parseFloat(input_depth.getText().toString()); // room height
+                                    imageWidth = Float.parseFloat(input_width.getText().toString()); // room width
+                                    imageHeight = Float.parseFloat(input_depth.getText().toString()); // room height
 
-                                    float scale = parametrizingDimensions(width, height, imageWidth, imageHeight);
+                                    scale = parametrizingDimensions(width, height, imageWidth, imageHeight);
 
-                                    float newHeight = scale*Float.parseFloat(input_depth.getText().toString());
+                                    newHeight = scale*Float.parseFloat(input_depth.getText().toString());
 
                                     // creating the available space to draw
                                     Bitmap bg = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -90,26 +101,9 @@ public class MapFragment extends Fragment {
                                     Canvas canvas = new Canvas(bg);
                                     room = new RoomView(getActivity(), width, newHeight);
                                     room.onDraw(canvas);
-                                    //int bottom = room.getBottom();
 
-                                    productView = new ProductView(getActivity().getApplicationContext());
-
-                                    LinearLayout.LayoutParams parms
-                                            = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-                                    parms.leftMargin = 210;
-                                    parms.topMargin = 117;
-                                    parms.rightMargin = 210;
-                                    parms.bottomMargin = 900;
-                                    productView.setLayoutParams(parms);
-                                    productView.setBackgroundColor(Color.BLUE);
-
-                                    productView.setOnTouchListener(new MyTouchListener());
-                                    room.setOnDragListener(new RoomView(getActivity()));
-
-
-                                    LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
-                                    ll.addView(productView);
-                                    ll.setBackgroundDrawable(new BitmapDrawable(bg));
+                                    RelativeLayout room = (RelativeLayout) rootView.findViewById(R.id.mapEditor);
+                                    room.setBackgroundDrawable(new BitmapDrawable(bg));
                                 }
                             }
                         })
@@ -129,29 +123,6 @@ public class MapFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onResume() {
-        if (button == null) {
-            Bitmap bg = Bitmap.createBitmap(720, 360, Bitmap.Config.ARGB_8888); //test values
-            RelativeLayout mapLayout = (RelativeLayout) rootView.findViewById(R.id.mapEditor);
-            mapLayout.addView(room);
-            mapLayout.setBackgroundDrawable(new BitmapDrawable(bg));
-
-            Rect rectf = new Rect();
-            room.getLocalVisibleRect(rectf);
-
-            int bottom = rectf.bottom;
-            int left = rectf.left;
-
-            int bottom2 = room.getBottom();
-            int left2 = room.getLeft();
-
-            int bP = productView.getBottom();
-            int lP = productView.getLeft();
-        }
-        super.onResume();
-    }
-
     // This defines your touch listener
     private final class MyTouchListener implements View.OnTouchListener {
         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -165,6 +136,56 @@ public class MapFragment extends Fragment {
                 return false;
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+        editor = settings.edit();
+        String idProduct = settings.getString("productMap", null);
+        if (idProduct != null) {
+            editor.remove("productMap");
+            editor.commit();
+
+            Product selectedProduct = new Product();
+
+            // get the product from json
+            JsonUtils utils = new JsonUtils(getActivity());
+            ArrayList<Product> allProducts = utils.getAllProducts();
+
+            for (Product prod : allProducts) {
+                if (prod.getProductID().equals(idProduct))
+                    selectedProduct = prod;
+            }
+
+            float productWidth = selectedProduct.getScreenWidth(imageWidth, 720);
+            float productHeight = selectedProduct.getScreenHight(imageHeight, newHeight);
+            setProductParams(0, 0, Math.round(productWidth), Math.round(productHeight));
+        }
+        super.onResume();
+    }
+
+    public void setProductParams(int left, int top, int width, int height) {
+        productView = new ProductView(getActivity().getApplicationContext());
+
+        LinearLayout.LayoutParams parms
+                = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
+
+        parms.leftMargin = left;
+        parms.topMargin = top;
+        parms.width = width;
+        parms.height = height;
+        productView.setLayoutParams(parms);
+        productView.setBackgroundColor(Color.BLUE);
+
+        productView.setOnTouchListener(new MyTouchListener());
+        room.setOnDragListener(new RoomView(getActivity()));
+
+        Bitmap bg = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
+        ll.addView(productView);
+        ll.setBackgroundDrawable(new BitmapDrawable(bg));
     }
 
     public float parametrizingDimensions(int screenWidth, int screenHeight, float pictureWidth, float pictureDepth) {
@@ -188,8 +209,8 @@ public class MapFragment extends Fragment {
             case R.id.addButton:
                 if (button == null) {
                     // setting shared preferences to manage the onItemClick in the ProductsSearch
-                    SharedPreferences settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
-                    SharedPreferences.Editor editor = settings.edit();
+                    settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+                    editor = settings.edit();
                     editor.putString("mapEditor", "enabled");
                     editor.commit();
                     allProducts();

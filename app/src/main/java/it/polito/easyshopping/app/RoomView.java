@@ -51,7 +51,7 @@ public class RoomView extends ViewGroup implements View.OnDragListener {
         paint.setColor(Color.parseColor("#F4A460"));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(15);
-        canvas.drawRect(0, 5, width, height, paint);
+        canvas.drawRect(0, 0, width, height, paint);
     }
 
     @Override

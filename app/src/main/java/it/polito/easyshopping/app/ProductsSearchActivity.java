@@ -3,6 +3,7 @@ package it.polito.easyshopping.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -31,6 +32,8 @@ public class ProductsSearchActivity extends Activity {
     private EditText inputSearch;
     private ArrayList<Product> allProducts;
     private ArrayList<Product> tempList;
+    private SharedPreferences settings;
+    private SharedPreferences.Editor editor;
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
@@ -52,16 +55,18 @@ public class ProductsSearchActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-            SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
-            SharedPreferences.Editor editor = settings.edit();
+            settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+            editor = settings.edit();
             String map = settings.getString("mapEditor", null);
+
+            Product selectedProduct;
+            tempList = ProductsSearchActivity.this.adapter.getTempList();
+            if (tempList != null)
+                selectedProduct = tempList.get(position);
+            else
+                selectedProduct = allProducts.get(position);
+
             if (map.equals("disabled")) { //
-                Product selectedProduct;
-                tempList = ProductsSearchActivity.this.adapter.getTempList();
-                if (tempList != null)
-                    selectedProduct = tempList.get(position);
-                else
-                    selectedProduct = allProducts.get(position);
                 String productID = selectedProduct.getProductID();
                 String set = selectedProduct.getSet();
                 String imagePath = selectedProduct.getImagePath();
@@ -72,10 +77,9 @@ public class ProductsSearchActivity extends Activity {
                 Intent i = new Intent(ProductsSearchActivity.this, DescProductActivity.class);
                 startActivity(i);
             } else {
-                View viewEditor = getLayoutInflater().inflate(R.layout.fragment_map, null);
-                LinearLayout layout = (LinearLayout) viewEditor.findViewById(R.id.rect);
-                ProductView productView = new ProductView(getApplicationContext());
-                layout.addView(productView);
+                editor.putString("productMap", selectedProduct.getProductID());
+                editor.commit();
+                finish();
             }
 
             }

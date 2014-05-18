@@ -160,19 +160,19 @@ public class MapFragment extends Fragment {
 
             float productWidth = selectedProduct.getScreenWidth(imageWidth, 720);
             float productHeight = selectedProduct.getScreenHight(imageHeight, newHeight);
-            setProductParams(0, 0, Math.round(productWidth), Math.round(productHeight));
+            setProductParams(Math.round(productWidth), Math.round(productHeight));
         }
         super.onResume();
     }
 
-    public void setProductParams(int left, int top, int width, int height) {
+    public void setProductParams(int width, int height) {
         productView = new ProductView(getActivity().getApplicationContext());
 
         LinearLayout.LayoutParams parms
                 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
 
-        parms.leftMargin = left;
-        parms.topMargin = top;
+        parms.leftMargin = Math.round((this.width - imageWidth)/2);
+        parms.topMargin = Math.round((newHeight - imageHeight)/2);
         parms.width = width;
         parms.height = height;
         productView.setLayoutParams(parms);

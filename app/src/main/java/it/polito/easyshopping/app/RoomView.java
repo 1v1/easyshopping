@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 /**
  * Created by jessica on 15/05/14.
  */
-public class RoomView extends ViewGroup implements View.OnDragListener {
+public class RoomView extends ViewGroup {
     private int width;
     private float height;
     private Drawable enterShape = getResources().getDrawable(R.drawable.enter_shape);
@@ -52,37 +52,5 @@ public class RoomView extends ViewGroup implements View.OnDragListener {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(15);
         canvas.drawRect(0, 0, width, height, paint);
-    }
-
-    @Override
-    public boolean onDrag(View v, DragEvent event) {
-        int action = event.getAction();
-        switch (event.getAction()) {
-            case DragEvent.ACTION_DRAG_STARTED:
-                // do nothing
-                break;
-            case DragEvent.ACTION_DRAG_ENTERED:
-                break;
-            case DragEvent.ACTION_DRAG_EXITED:
-                if (dropEventNotHandled(event)) {
-                    v.setVisibility(View.VISIBLE);
-                }
-                break;
-            case DragEvent.ACTION_DROP:
-                // ver se o retangulo ta dentro do comodo.
-                v.setVisibility(View.VISIBLE);
-                break;
-            case DragEvent.ACTION_DRAG_ENDED:
-                if (dropEventNotHandled(event)) {
-                    v.setVisibility(View.VISIBLE);
-                }
-            default:
-                break;
-        }
-        return true;
-    }
-
-    private boolean dropEventNotHandled(DragEvent dragEvent) {
-        return !dragEvent.getResult();
     }
 }

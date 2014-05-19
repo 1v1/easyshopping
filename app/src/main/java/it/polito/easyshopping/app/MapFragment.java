@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,6 +49,7 @@ public class MapFragment extends Fragment {
     private SharedPreferences.Editor editor;
     private int width, height;
     private float imageWidth, imageHeight, scale, newHeight;
+    private boolean flag = false;
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
@@ -104,6 +106,7 @@ public class MapFragment extends Fragment {
 
                                     RelativeLayout room = (RelativeLayout) rootView.findViewById(R.id.mapEditor);
                                     room.setBackgroundDrawable(new BitmapDrawable(bg));
+                                    room.setOnDragListener(new MyDragListener()); ////
                                 }
                             }
                         })
@@ -138,12 +141,65 @@ public class MapFragment extends Fragment {
         }
     }
 
+    class MyDragListener implements View.OnDragListener {
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            int action = event.getAction();
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    // do nothing
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    break;
+                case DragEvent.ACTION_DROP:
+                    // ver se o retangulo ta dentro do comodo.
+                    View view = (View) event.getLocalState();
+                    int left = (int) event.getX();
+                    int top = (int) event.getY();
+                    int width = view.getWidth();
+                    int height = view.getHeight();
+                    LinearLayout.LayoutParams parms
+                            = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT);
+
+                    parms.leftMargin = left;
+                    parms.topMargin = top;
+                    parms.width = width;
+                    parms.height = height;
+                    view.setLayoutParams(parms);
+                    ViewGroup owner = (ViewGroup) view.getParent();
+                    owner.removeView(view);
+
+                    flag = true;
+
+                    RelativeLayout container = (RelativeLayout) v;
+                    container.addView(view);
+                    view.setVisibility(View.VISIBLE);
+                    return true;
+                case DragEvent.ACTION_DRAG_ENDED:
+//                    if (dropEventNotHandled(event)) {
+//                        v.setVisibility(View.VISIBLE);
+//                    }
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        }
+
+        private boolean dropEventNotHandled(DragEvent dragEvent) {
+            return !dragEvent.getResult();
+        }
+    }
+
     @Override
     public void onResume() {
         settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
         editor = settings.edit();
         String idProduct = settings.getString("productMap", null);
-        if (idProduct != null) {
+        if (idProduct != null && !flag) {
             editor.remove("productMap");
             editor.commit();
 
@@ -179,7 +235,7 @@ public class MapFragment extends Fragment {
         productView.setBackgroundColor(Color.BLUE);
 
         productView.setOnTouchListener(new MyTouchListener());
-        room.setOnDragListener(new RoomView(getActivity()));
+        //room.setOnDragListener(new RoomView(getActivity()));
 
         Bitmap bg = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 

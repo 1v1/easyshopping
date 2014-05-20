@@ -49,7 +49,7 @@ public class MapFragment extends Fragment {
     private SharedPreferences.Editor editor;
     private int width, height;
     private float imageWidth, imageHeight, scale, newHeight;
-    private boolean flag = false;
+    private ArrayList<Product> products;
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
@@ -57,6 +57,7 @@ public class MapFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
         button = (Button) rootView.findViewById(R.id.button_map);
+        products = new ArrayList<Product>();
         setHasOptionsMenu(true);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -172,8 +173,6 @@ public class MapFragment extends Fragment {
                     ViewGroup owner = (ViewGroup) view.getParent();
                     owner.removeView(view);
 
-                    flag = true;
-
                     RelativeLayout container = (RelativeLayout) v;
                     container.addView(view);
                     view.setVisibility(View.VISIBLE);
@@ -199,7 +198,7 @@ public class MapFragment extends Fragment {
         settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
         editor = settings.edit();
         String idProduct = settings.getString("productMap", null);
-        if (idProduct != null && !flag) {
+        if (idProduct != null) {
             editor.remove("productMap");
             editor.commit();
 
@@ -213,6 +212,9 @@ public class MapFragment extends Fragment {
                 if (prod.getProductID().equals(idProduct))
                     selectedProduct = prod;
             }
+
+            editor.putString("selectedProduct", selectedProduct.getProductID());
+            editor.commit();
 
             float productWidth = selectedProduct.getScreenWidth(imageWidth, 720);
             float productHeight = selectedProduct.getScreenHight(imageHeight, newHeight);

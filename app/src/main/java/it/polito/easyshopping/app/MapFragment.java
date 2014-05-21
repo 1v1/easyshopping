@@ -19,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -127,6 +128,16 @@ public class MapFragment extends Fragment {
         return rootView;
     }
 
+    final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
+        public void onLongPress(MotionEvent e) {
+            Log.e("", "Longpress detected");
+        }
+    });
+
+    public boolean onTouchEvent(MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
+    };
+
     // This defines your touch listener
     private final class MyTouchListener implements View.OnTouchListener {
         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -188,6 +199,7 @@ public class MapFragment extends Fragment {
 
         private boolean isViewContains(float x, float y) {
             Rect boundary = new Rect(0, 0, width, (int) newHeight);
+            //room.getHitRect(boundary);
             return boundary.contains((int) x, (int) y);
         }
     }

@@ -156,12 +156,15 @@ public class MapFragment extends Fragment {
                 case DragEvent.ACTION_DROP:
                     View view = (View) event.getLocalState();
 
-                    float left = event.getX();
-                    float top = event.getY();
+                    if (isViewContains(view)) {
+                        float left = event.getX();
+                        float top = event.getY();
 
-                    view.setX(left - (view.getWidth()/2));
-                    view.setY(top - (view.getHeight()/2));
-
+                        view.setX(left - (view.getWidth()/2));
+                        view.setY(top - (view.getHeight()/2));
+                    } else {
+                        Log.d("DEBUG", "View is outside of the room");
+                    }
 //                    ViewGroup owner = (ViewGroup) view.getParent();
 //                    owner.removeView(view);
 //
@@ -182,6 +185,13 @@ public class MapFragment extends Fragment {
 
         private boolean dropEventNotHandled(DragEvent dragEvent) {
             return !dragEvent.getResult();
+        }
+
+        private boolean isViewContains(View view) {
+            int[] l = new int[2];
+            view.getLocationOnScreen(l);
+            Rect rect = new Rect(l[0], l[1], l[0] + view.getWidth(), l[1] + view.getHeight());
+            return rect.contains(l[0], l[1]);
         }
     }
 
@@ -205,11 +215,13 @@ public class MapFragment extends Fragment {
                     selectedProduct = prod;
             }
 
-            editor.putString("selectedProduct", selectedProduct.getProductID());
+            editor.putString("selectedProduct", selectedProduct.getProductID()); //will be used in the cart
             editor.commit();
 
             float productWidth = selectedProduct.getScreenWidth(imageWidth, 720);
             float productHeight = selectedProduct.getScreenHight(imageHeight, newHeight);
+            float fwidth = Math.round(productWidth);
+            float fheight = Math.round(productHeight);
             setProductParams(Math.round(productWidth), Math.round(productHeight));
         }
         super.onResume();
@@ -221,8 +233,10 @@ public class MapFragment extends Fragment {
         LinearLayout.LayoutParams parms
                 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
 
-        parms.leftMargin = Math.round((this.width - imageWidth)/2);
-        parms.topMargin = Math.round((newHeight - imageHeight)/2);
+        //parms.leftMargin = Math.round((this.width - imageWidth)/2);
+        //parms.topMargin = Math.round((newHeight - imageHeight)/2);
+        parms.leftMargin = 0;
+        parms.topMargin = 0;
         parms.width = width;
         parms.height = height;
         productView.setLayoutParams(parms);

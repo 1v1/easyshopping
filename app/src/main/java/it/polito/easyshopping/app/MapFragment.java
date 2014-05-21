@@ -155,27 +155,26 @@ public class MapFragment extends Fragment {
                     break;
                 case DragEvent.ACTION_DROP:
                     View view = (View) event.getLocalState();
+                    float x = event.getX();
+                    float y = event.getY();
 
-                    if (isViewContains(view)) {
-                        float left = event.getX();
-                        float top = event.getY();
-
-                        view.setX(left - (view.getWidth()/2));
-                        view.setY(top - (view.getHeight()/2));
+                    if (isViewContains(x, y)) {
+                        view.setX(x - (view.getWidth()/2));
+                        view.setY(y - (view.getHeight()/2));
                     } else {
                         Log.d("DEBUG", "View is outside of the room");
                     }
-//                    ViewGroup owner = (ViewGroup) view.getParent();
-//                    owner.removeView(view);
-//
-//                    RelativeLayout container = (RelativeLayout) v;
-//                    container.addView(view);
+                    // ViewGroup owner = (ViewGroup) view.getParent();
+                    // owner.removeView(view);
+                    //
+                    // RelativeLayout container = (RelativeLayout) v;
+                    // container.addView(view);
                     view.setVisibility(View.VISIBLE);
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
-//                    if (dropEventNotHandled(event)) {
-//                        v.setVisibility(View.VISIBLE);
-//                    }
+                    // if (dropEventNotHandled(event)) {
+                    // v.setVisibility(View.VISIBLE);
+                    // }
                     break;
                 default:
                     break;
@@ -187,11 +186,9 @@ public class MapFragment extends Fragment {
             return !dragEvent.getResult();
         }
 
-        private boolean isViewContains(View view) {
-            int[] l = new int[2];
-            view.getLocationOnScreen(l);
-            Rect rect = new Rect(l[0], l[1], l[0] + view.getWidth(), l[1] + view.getHeight());
-            return rect.contains(l[0], l[1]);
+        private boolean isViewContains(float x, float y) {
+            Rect boundary = new Rect(0, 0, width, (int) newHeight);
+            return boundary.contains((int) x, (int) y);
         }
     }
 

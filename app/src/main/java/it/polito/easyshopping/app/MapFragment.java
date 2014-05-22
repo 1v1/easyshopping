@@ -1,6 +1,7 @@
 package it.polito.easyshopping.app;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,12 +51,14 @@ public class MapFragment extends Fragment {
     private ProductView productView;
     private View rootView;
     private RoomView room;
+    private LinearLayout ll;
     private RelativeLayout roomLayout;
     private SharedPreferences settings;
     private SharedPreferences.Editor editor;
     private int width, height;
-    private float imageWidth, imageHeight, scale, newHeight;
+    private float imageWidth, imageHeight, scale, newHeight, eventX, eventY;
     private ArrayList<Product> products;
+    private boolean flag = false;
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
@@ -134,10 +137,47 @@ public class MapFragment extends Fragment {
         return rootView;
     }
 
+    public Dialog actionsDialog(final View selectedView) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.choose_action)
+                .setItems(R.array.actions_array, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                // rotate
+                                productView.setX(eventX - (productView.getWidth()/2));
+                                productView.setY(eventY - (productView.getHeight()/2));
+
+                                ViewGroup owner = (ViewGroup) productView.getParent();
+                                owner.removeView(productView);
+
+                                setProductParams(productView.getHeight(), productView.getWidth());
+                                break;
+                            case 1:
+                                // delete
+                                roomLayout.removeView(selectedView);
+                                editor = settings.edit();
+                                editor.putString("removeView", "remove");
+                                //editor.putString("selectedProduct",)
+                                editor.commit();
+                                break;
+                            case 2:
+                                // cancel
+                                break;
+                        }
+                    }
+                });
+        return builder.create();
+    }
+
     final Handler handler = new Handler();
     Runnable mLongPressed = new Runnable() {
         public void run() {
             Log.i("", "Long press!");
+            if (!flag) {
+                Dialog dialog = actionsDialog(productView);
+                dialog.show();
+            }
         }
     };
 
@@ -147,40 +187,43 @@ public class MapFragment extends Fragment {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                 handler.postDelayed(mLongPressed, 1000);
+
                 ClipData data = ClipData.newPlainText("", "");
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                 view.startDrag(data, shadowBuilder, view, 0);
                 view.setVisibility(View.INVISIBLE);
-
-            }
-
-            if((motionEvent.getAction() == MotionEvent.ACTION_MOVE)
-                    ||(motionEvent.getAction() == MotionEvent.ACTION_UP))
+                return true;
+            }  else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 handler.removeCallbacks(mLongPressed);
-
-            return true;
+                return false;
+            } else {
+                return false;
+            }
         }
     }
 
     class MyDragListener implements View.OnDragListener {
         @Override
         public boolean onDrag(View v, DragEvent event) {
-            int action = event.getAction();
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
+                    flag = true;
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
+                    flag = true;
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
+                    flag = false;
                     break;
                 case DragEvent.ACTION_DROP:
+                    flag = false;
                     View view = (View) event.getLocalState();
-                    float x = event.getX();
-                    float y = event.getY();
+                    eventX = event.getX();
+                    eventY = event.getY();
 
-                    if (isViewContains(x, y)) {
-                        view.setX(x - (view.getWidth()/2));
-                        view.setY(y - (view.getHeight()/2));
+                    if (isViewContains(eventX, eventY)) {
+                        view.setX(eventX - (view.getWidth()/2));
+                        view.setY(eventY - (view.getHeight()/2));
 
                         ViewGroup owner = (ViewGroup) view.getParent();
                         owner.removeView(view);
@@ -194,6 +237,7 @@ public class MapFragment extends Fragment {
                     view.setVisibility(View.VISIBLE);
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
+                    flag = false;
                     if (dropEventNotHandled(event)) {
                         v.setVisibility(View.VISIBLE);
                     }
@@ -210,7 +254,6 @@ public class MapFragment extends Fragment {
 
         private boolean isViewContains(float x, float y) {
             Rect boundary = new Rect(0, 0, width, (int) newHeight);
-            //room.getHitRect(boundary);
             return boundary.contains((int) x, (int) y);
         }
     }
@@ -251,8 +294,6 @@ public class MapFragment extends Fragment {
         LinearLayout.LayoutParams parms
                 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
 
-        //parms.leftMargin = Math.round((this.width - imageWidth)/2);
-        //parms.topMargin = Math.round((newHeight - imageHeight)/2);
         parms.leftMargin = 0;
         parms.topMargin = 0;
         parms.width = width;
@@ -261,10 +302,9 @@ public class MapFragment extends Fragment {
         productView.setBackgroundColor(Color.BLUE);
 
         productView.setOnTouchListener(new MyTouchListener());
-        roomLayout.setOnDragListener(new MyDragListener()); ////
-        //room.setOnDragListener(new RoomView(getActivity()));
+        roomLayout.setOnDragListener(new MyDragListener());
 
-        LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
+        ll = (LinearLayout) rootView.findViewById(R.id.rect);
         Bitmap bg = Bitmap.createBitmap(ll.getWidth(), ll.getHeight(), Bitmap.Config.ARGB_8888);
         ll.addView(productView);
         ll.setBackgroundDrawable(new BitmapDrawable(bg));

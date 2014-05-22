@@ -90,7 +90,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      * Launching new activity with all products
      * */
     private void allProducts() {
-        SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+                                                                                                                                                                                                                        SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("mapEditor", "disabled");
         editor.commit();

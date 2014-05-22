@@ -29,6 +29,7 @@ public class CartFragment extends Fragment {
     private Product selectedProduct;
     private ArrayList<Product> products;
     private TextView empty, tv_totalPrice;
+    private int indexProdToRemove = 0;
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
@@ -55,7 +56,7 @@ public class CartFragment extends Fragment {
         settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
         editor = settings.edit();
 
-        //editor.remove("selectedProduct");
+        //editor.remove("removeView");
         String selectedProductID = settings.getString("selectedProduct", null);
 
         if (selectedProductID != null) {
@@ -70,7 +71,16 @@ public class CartFragment extends Fragment {
                     selectedProduct = prod;
             }
 
-            products.add(selectedProduct);
+            if (settings.contains("removeView")) {
+                editor.remove("removeView");
+                editor.commit();
+
+                if (checkArray(selectedProductID)) {
+                    products.remove(indexProdToRemove);
+                }
+            } else {
+                products.add(selectedProduct);
+            }
 
             float totalPrice = totalPrice();
 
@@ -83,6 +93,16 @@ public class CartFragment extends Fragment {
             listView.setAdapter(new CartAdapter(getActivity().getApplicationContext(), products));
             tv_totalPrice.setText("Total price: €" + totalPrice);
         }
+    }
+
+    private boolean checkArray(String productID) {
+        for(Product prod : products) {
+            if (prod.getProductID().equals(productID)) {
+                indexProdToRemove = products.indexOf(prod);
+                return true;
+            }
+        }
+        return false;
     }
 
     private float totalPrice() {

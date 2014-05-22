@@ -15,6 +15,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -31,10 +32,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Map;
 
 import it.polito.easyshopping.utils.JsonUtils;
 
@@ -99,16 +103,18 @@ public class MapFragment extends Fragment {
                                     newHeight = scale*Float.parseFloat(input_depth.getText().toString());
 
                                     // creating the available space to draw
-                                    Bitmap bg = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                                    //Bitmap bg = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                                     Bitmap image = BitmapFactory.decodeResource(getActivity().getResources(),
                                             R.drawable.ic_launcher);
+
+                                    roomLayout = (RelativeLayout) rootView.findViewById(R.id.mapEditor);
+                                    Bitmap bg = Bitmap.createBitmap(roomLayout.getWidth(), roomLayout.getHeight(), Bitmap.Config.ARGB_8888);
+                                    roomLayout.setBackgroundDrawable(new BitmapDrawable(bg));
+
                                     // creating the rectangle
                                     Canvas canvas = new Canvas(bg);
                                     room = new RoomView(getActivity(), width, newHeight);
                                     room.onDraw(canvas);
-
-                                    roomLayout = (RelativeLayout) rootView.findViewById(R.id.mapEditor);
-                                    roomLayout.setBackgroundDrawable(new BitmapDrawable(bg));
                                 }
                             }
                         })
@@ -128,28 +134,31 @@ public class MapFragment extends Fragment {
         return rootView;
     }
 
-    final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-        public void onLongPress(MotionEvent e) {
-            Log.e("", "Longpress detected");
+    final Handler handler = new Handler();
+    Runnable mLongPressed = new Runnable() {
+        public void run() {
+            Log.i("", "Long press!");
         }
-    });
-
-    public boolean onTouchEvent(MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
     };
 
     // This defines your touch listener
     private final class MyTouchListener implements View.OnTouchListener {
+
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                handler.postDelayed(mLongPressed, 1000);
                 ClipData data = ClipData.newPlainText("", "");
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                 view.startDrag(data, shadowBuilder, view, 0);
                 view.setVisibility(View.INVISIBLE);
-                return true;
-            } else {
-                return false;
+
             }
+
+            if((motionEvent.getAction() == MotionEvent.ACTION_MOVE)
+                    ||(motionEvent.getAction() == MotionEvent.ACTION_UP))
+                handler.removeCallbacks(mLongPressed);
+
+            return true;
         }
     }
 
@@ -172,20 +181,22 @@ public class MapFragment extends Fragment {
                     if (isViewContains(x, y)) {
                         view.setX(x - (view.getWidth()/2));
                         view.setY(y - (view.getHeight()/2));
+
+                        ViewGroup owner = (ViewGroup) view.getParent();
+                        owner.removeView(view);
+
+                        RelativeLayout container = (RelativeLayout) v;
+                        container.addView(view);
                     } else {
                         Log.d("DEBUG", "View is outside of the room");
                     }
-                    // ViewGroup owner = (ViewGroup) view.getParent();
-                    // owner.removeView(view);
-                    //
-                    // RelativeLayout container = (RelativeLayout) v;
-                    // container.addView(view);
+
                     view.setVisibility(View.VISIBLE);
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    // if (dropEventNotHandled(event)) {
-                    // v.setVisibility(View.VISIBLE);
-                    // }
+                    if (dropEventNotHandled(event)) {
+                        v.setVisibility(View.VISIBLE);
+                    }
                     break;
                 default:
                     break;
@@ -227,10 +238,8 @@ public class MapFragment extends Fragment {
             editor.putString("selectedProduct", selectedProduct.getProductID()); //will be used in the cart
             editor.commit();
 
-            float productWidth = selectedProduct.getScreenWidth(imageWidth, 720);
+            float productWidth = selectedProduct.getScreenWidth(imageWidth, width);
             float productHeight = selectedProduct.getScreenHight(imageHeight, newHeight);
-            float fwidth = Math.round(productWidth);
-            float fheight = Math.round(productHeight);
             setProductParams(Math.round(productWidth), Math.round(productHeight));
         }
         super.onResume();
@@ -255,9 +264,8 @@ public class MapFragment extends Fragment {
         roomLayout.setOnDragListener(new MyDragListener()); ////
         //room.setOnDragListener(new RoomView(getActivity()));
 
-        Bitmap bg = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
         LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.rect);
+        Bitmap bg = Bitmap.createBitmap(ll.getWidth(), ll.getHeight(), Bitmap.Config.ARGB_8888);
         ll.addView(productView);
         ll.setBackgroundDrawable(new BitmapDrawable(bg));
     }

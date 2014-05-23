@@ -137,45 +137,6 @@ public class MapFragment extends Fragment {
         return rootView;
     }
 
-    public Dialog actionsDialog(final View selectedView) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.choose_action)
-                .setItems(R.array.actions_array, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        ProductView productView = (ProductView) selectedView;
-
-                        switch (which) {
-                            case 0:
-                                // rotate
-                                productView.setX(eventX - (productView.getWidth()/2));
-                                productView.setY(eventY - (productView.getHeight()/2));
-
-                                ViewGroup owner = (ViewGroup) productView.getParent();
-                                owner.removeView(productView);
-
-                                setProductParams(productView.getHeight(), productView.getWidth(), productView.getProduct());
-                                break;
-                            case 1:
-                                // delete
-
-                                Product.getAddedProducts().remove(productView.getProduct());
-                                ll.removeView(selectedView);
-
-                                //sending message to receiver registered (mapFragment) to notify about the removed product
-                                Intent data = new Intent("arrayUpdate");
-                                getActivity().sendBroadcast(data);
-
-                                break;
-                            case 2:
-                                // cancel
-                                break;
-                        }
-                    }
-                });
-        return builder.create();
-    }
-
     final Handler handler = new Handler();
     Runnable mLongPressed = new Runnable() {
         public void run() {
@@ -204,6 +165,51 @@ public class MapFragment extends Fragment {
                 return false;
             }
         }
+    }
+
+    public Dialog actionsDialog(final View selectedView) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.choose_action)
+                .setItems(R.array.actions_array, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        ProductView productView = (ProductView) selectedView;
+
+                        switch (which) {
+                            case 0:
+                                // rotate
+                                productView.setX(eventX - (productView.getWidth()/2));
+                                productView.setY(eventY - (productView.getHeight()/2));
+
+                                ViewGroup owner = (ViewGroup) productView.getParent();
+                                owner.removeView(productView);
+
+                                LinearLayout.LayoutParams parms
+                                        = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
+
+                                parms.width = productView.getHeight();
+                                parms.height = productView.getWidth();
+                                productView.setLayoutParams(parms);
+
+                                ll.addView(productView);
+                                break;
+                            case 1:
+                                // delete
+                                Product.getAddedProducts().remove(productView.getProduct());
+                                ll.removeView(selectedView);
+
+                                //sending message to receiver registered (mapFragment) to notify about the removed product
+                                Intent data = new Intent("arrayUpdate");
+                                getActivity().sendBroadcast(data);
+
+                                break;
+                            case 2:
+                                // cancel
+                                break;
+                        }
+                    }
+                });
+        return builder.create();
     }
 
     class MyDragListener implements View.OnDragListener {

@@ -3,6 +3,6 @@
     <string-array name="actions_array">
         <item>Rotate</item>
         <item>Delete</item>
-        <item>Cancel</item>
+        <item>Place Here!</item>
     </string-array>
 </resources>

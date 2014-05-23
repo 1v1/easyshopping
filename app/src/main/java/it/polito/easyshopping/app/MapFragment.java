@@ -37,6 +37,8 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
@@ -164,7 +166,7 @@ public class MapFragment extends Fragment {
     private final class MyTouchListener implements View.OnTouchListener {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                handler.postDelayed(mLongPressed, 2000);
+                handler.postDelayed(mLongPressed, 1500);
 
                 ClipData data = ClipData.newPlainText("", "");
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
@@ -297,14 +299,22 @@ public class MapFragment extends Fragment {
         parms.width = width;
         parms.height = height;
         productView.setLayoutParams(parms);
-        productView.setBackgroundColor(Color.BLUE);
+        // get input stream
+        InputStream inputStream = null;
+        try {
+            inputStream = getActivity().getAssets().open(selectedProduct.getMapPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // load image as Drawable
+        Drawable d = Drawable.createFromStream(inputStream, null);
+        productView.setBackgroundDrawable(d);
 
         productView.setOnTouchListener(new MyTouchListener());
         ll.setOnDragListener(new MyDragListener());
 
         Bitmap bg = Bitmap.createBitmap(ll.getWidth(), ll.getHeight(), Bitmap.Config.ARGB_8888);
         ll.addView(productView);
-
         ll.setBackgroundDrawable(new BitmapDrawable(bg));
     }
 

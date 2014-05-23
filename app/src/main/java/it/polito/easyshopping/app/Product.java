@@ -1,9 +1,14 @@
 package it.polito.easyshopping.app;
 
+import java.util.ArrayList;
+
 /**
  * Created by jessica on 06/05/14.
  */
 public class Product {
+
+    private static ArrayList<Product> addedProducts;
+
     private String name;
     private String description;
     private String price;
@@ -41,6 +46,15 @@ public class Product {
 
     public String getName() {
         return name;
+    }
+
+    public static ArrayList<Product> getAddedProducts() {
+
+        if (addedProducts == null) {
+            addedProducts = new ArrayList<Product>();
+        }
+
+        return addedProducts;
     }
 
     public String getDescription() {

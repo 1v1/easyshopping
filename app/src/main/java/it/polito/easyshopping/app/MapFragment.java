@@ -48,7 +48,7 @@ import it.polito.easyshopping.utils.JsonUtils;
  */
 public class MapFragment extends Fragment {
     private Button button;
-    private ProductView productView;
+    private ProductView selectedView;
     private View rootView;
     private RoomView room;
     private LinearLayout ll;
@@ -58,13 +58,13 @@ public class MapFragment extends Fragment {
     private int width, height;
     private float imageWidth, imageHeight, scale, newHeight, eventX, eventY;
     private ArrayList<Product> products;
-    private boolean flag = false;
     public static final String PREFS_NAME = "MyPrefsFile";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
-
+        ll = (LinearLayout) rootView.findViewById(R.id.rect);
+        roomLayout = (RelativeLayout) rootView.findViewById(R.id.mapEditor);
         button = (Button) rootView.findViewById(R.id.button_map);
         products = new ArrayList<Product>();
         setHasOptionsMenu(true);
@@ -110,7 +110,7 @@ public class MapFragment extends Fragment {
                                     Bitmap image = BitmapFactory.decodeResource(getActivity().getResources(),
                                             R.drawable.ic_launcher);
 
-                                    roomLayout = (RelativeLayout) rootView.findViewById(R.id.mapEditor);
+
                                     Bitmap bg = Bitmap.createBitmap(roomLayout.getWidth(), roomLayout.getHeight(), Bitmap.Config.ARGB_8888);
                                     roomLayout.setBackgroundDrawable(new BitmapDrawable(bg));
 
@@ -142,6 +142,9 @@ public class MapFragment extends Fragment {
         builder.setTitle(R.string.choose_action)
                 .setItems(R.array.actions_array, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+
+                        ProductView productView = (ProductView) selectedView;
+
                         switch (which) {
                             case 0:
                                 // rotate
@@ -151,15 +154,18 @@ public class MapFragment extends Fragment {
                                 ViewGroup owner = (ViewGroup) productView.getParent();
                                 owner.removeView(productView);
 
-                                setProductParams(productView.getHeight(), productView.getWidth());
+                                setProductParams(productView.getHeight(), productView.getWidth(), productView.getProduct());
                                 break;
                             case 1:
                                 // delete
-                                roomLayout.removeView(selectedView);
-                                editor = settings.edit();
-                                editor.putString("removeView", "remove");
-                                //editor.putString("selectedProduct",)
-                                editor.commit();
+
+                                Product.getAddedProducts().remove(productView.getProduct());
+                                ll.removeView(selectedView);
+
+                                //sending message to receiver registered (mapFragment) to notify about the removed product
+                                Intent data = new Intent("arrayUpdate");
+                                getActivity().sendBroadcast(data);
+
                                 break;
                             case 2:
                                 // cancel
@@ -174,10 +180,8 @@ public class MapFragment extends Fragment {
     Runnable mLongPressed = new Runnable() {
         public void run() {
             Log.i("", "Long press!");
-            if (!flag) {
-                Dialog dialog = actionsDialog(productView);
-                dialog.show();
-            }
+            Dialog dialog = actionsDialog(selectedView);
+            dialog.show();
         }
     };
 
@@ -186,7 +190,7 @@ public class MapFragment extends Fragment {
 
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                handler.postDelayed(mLongPressed, 1000);
+                handler.postDelayed(mLongPressed, 500);
 
                 ClipData data = ClipData.newPlainText("", "");
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
@@ -205,19 +209,22 @@ public class MapFragment extends Fragment {
     class MyDragListener implements View.OnDragListener {
         @Override
         public boolean onDrag(View v, DragEvent event) {
+
+            View view = (View) event.getLocalState();
+
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
-                    flag = true;
+                    Log.d("DEBUG", "teste");
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    flag = true;
+                    Log.d("DEBUG", "teste");
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    flag = false;
+                    Log.d("DEBUG", "teste");
                     break;
                 case DragEvent.ACTION_DROP:
-                    flag = false;
-                    View view = (View) event.getLocalState();
+                    selectedView = (ProductView) view;
+
                     eventX = event.getX();
                     eventY = event.getY();
 
@@ -228,23 +235,21 @@ public class MapFragment extends Fragment {
                         ViewGroup owner = (ViewGroup) view.getParent();
                         owner.removeView(view);
 
-                        RelativeLayout container = (RelativeLayout) v;
-                        container.addView(view);
+                        //RelativeLayout container = (RelativeLayout) v;
+                        ll.addView(view);
                     } else {
                         Log.d("DEBUG", "View is outside of the room");
                     }
 
-                    view.setVisibility(View.VISIBLE);
-                    return true;
+                    break;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    flag = false;
-                    if (dropEventNotHandled(event)) {
-                        v.setVisibility(View.VISIBLE);
-                    }
+                    Log.d("DEBUG", "teste");
                     break;
                 default:
+                    Log.d("DEBUG", "teste");
                     break;
             }
+            view.setVisibility(View.VISIBLE);
             return true;
         }
 
@@ -260,36 +265,21 @@ public class MapFragment extends Fragment {
 
     @Override
     public void onResume() {
-        settings = getActivity().getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
-        editor = settings.edit();
-        String idProduct = settings.getString("productMap", null);
-        if (idProduct != null) {
-            editor.remove("productMap");
-            editor.commit();
 
-            Product selectedProduct = new Product();
+        ArrayList<Product> productsList = Product.getAddedProducts();
 
-            // get the product from json
-            JsonUtils utils = new JsonUtils(getActivity());
-            ArrayList<Product> allProducts = utils.getAllProducts();
-
-            for (Product prod : allProducts) {
-                if (prod.getProductID().equals(idProduct))
-                    selectedProduct = prod;
-            }
-
-            editor.putString("selectedProduct", selectedProduct.getProductID()); //will be used in the cart
-            editor.commit();
-
+        if (ll.getChildCount() < productsList.size()) {
+            Product selectedProduct = productsList.get(productsList.size()-1);
             float productWidth = selectedProduct.getScreenWidth(imageWidth, width);
             float productHeight = selectedProduct.getScreenHight(imageHeight, newHeight);
-            setProductParams(Math.round(productWidth), Math.round(productHeight));
+            setProductParams(Math.round(productWidth), Math.round(productHeight), selectedProduct);
         }
         super.onResume();
     }
 
-    public void setProductParams(int width, int height) {
-        productView = new ProductView(getActivity().getApplicationContext());
+    public void setProductParams(int width, int height, Product selectedProduct) {
+        ProductView productView = new ProductView(getActivity().getApplicationContext());
+        productView.setProduct(selectedProduct);
 
         LinearLayout.LayoutParams parms
                 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
@@ -302,11 +292,11 @@ public class MapFragment extends Fragment {
         productView.setBackgroundColor(Color.BLUE);
 
         productView.setOnTouchListener(new MyTouchListener());
-        roomLayout.setOnDragListener(new MyDragListener());
+        ll.setOnDragListener(new MyDragListener());
 
-        ll = (LinearLayout) rootView.findViewById(R.id.rect);
         Bitmap bg = Bitmap.createBitmap(ll.getWidth(), ll.getHeight(), Bitmap.Config.ARGB_8888);
         ll.addView(productView);
+
         ll.setBackgroundDrawable(new BitmapDrawable(bg));
     }
 

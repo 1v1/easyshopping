@@ -55,32 +55,31 @@ public class ProductsSearchActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-            settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
-            editor = settings.edit();
-            String map = settings.getString("mapEditor", null);
+                settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+                editor = settings.edit();
+                String map = settings.getString("mapEditor", null);
 
-            Product selectedProduct;
-            tempList = ProductsSearchActivity.this.adapter.getTempList();
-            if (tempList != null)
-                selectedProduct = tempList.get(position);
-            else
-                selectedProduct = allProducts.get(position);
+                Product selectedProduct;
+                tempList = ProductsSearchActivity.this.adapter.getTempList();
+                if (tempList != null)
+                    selectedProduct = tempList.get(position);
+                else
+                    selectedProduct = allProducts.get(position);
 
-            if (map.equals("disabled")) { //
-                String productID = selectedProduct.getProductID();
-                String set = selectedProduct.getSet();
-                String imagePath = selectedProduct.getImagePath();
-                editor.putString("productID", productID);
-                editor.putString("set", set);
-                editor.putString("imagePath", imagePath); //VER DEPOIS
-                editor.commit();
-                Intent i = new Intent(ProductsSearchActivity.this, DescProductActivity.class);
-                startActivity(i);
-            } else {
-                editor.putString("productMap", selectedProduct.getProductID());
-                editor.commit();
-                finish();
-            }
+                if (map.equals("disabled")) { //
+                    String productID = selectedProduct.getProductID();
+                    String set = selectedProduct.getSet();
+                    String imagePath = selectedProduct.getImagePath();
+                    editor.putString("productID", productID);
+                    editor.putString("set", set);
+                    editor.putString("imagePath", imagePath); //VER DEPOIS
+                    editor.commit();
+                    Intent i = new Intent(ProductsSearchActivity.this, DescProductActivity.class);
+                    startActivity(i);
+                } else {
+                    Product.getAddedProducts().add(selectedProduct);
+                    finish();
+                }
 
             }
         });

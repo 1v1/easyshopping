@@ -12,6 +12,7 @@ import android.view.View;
  */
 public class ProductView extends View {
     private Paint paint;
+    private Product product;
 
     public ProductView(Context context) {
         super(context);
@@ -23,5 +24,13 @@ public class ProductView extends View {
 
     public ProductView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

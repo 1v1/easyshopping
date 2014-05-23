@@ -2,7 +2,7 @@
   "products": [
     {
       "name": "Soft chair",
-      "description": "Description here",
+      "description": "Very soft chair, recommended for use in a living room.",
       "price": "40",
       "productID": "1",
       "width": "100",
@@ -13,7 +13,7 @@
     },
     {
       "name": "Another soft chair",
-      "description": "Description here",
+      "description": "Soft and small chair, recommended for use around a center table.",
       "price": "40",
       "productID": "2",
       "width": "80",
@@ -24,7 +24,7 @@
     },
     {
       "name": "Center table",
-      "description": "Description here",
+      "description": "Simple and cheap center table.",
       "price": "35",
       "productID": "3",
       "width": "150",
@@ -35,7 +35,7 @@
     },
     {
       "name": "Media stand",
-      "description": "Description here",
+      "description": "Ideal to place some media items, like a TV or a home theater.",
       "price": "110",
       "productID": "4",
       "width": "150",
@@ -46,8 +46,8 @@
     },
     {
       "name": "Red sofa",
-      "description": "Description here",
-      "price": "90",
+      "description": "Fancy and gorgeous sofa.",
+      "price": "500",
       "productID": "5",
       "width": "200",
       "depth": "100",
@@ -57,7 +57,7 @@
     },
     {
       "name": "Double bed",
-      "description": "Description here",
+      "description": "Very comfortable bed, with great size and ideal for couples.",
       "price": "93",
       "productID": "6",
       "width": "138",

@@ -1,4 +1,4 @@
-package it.polito.easyshopping.app;
+package it.polito.easyshopping.app.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import it.polito.easyshopping.app.R;
 
 /**
  * Created by jessica on 08/05/14.

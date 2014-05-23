@@ -1,26 +1,24 @@
-package it.polito.easyshopping.app;
+package it.polito.easyshopping.app.activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
 import it.polito.easyshopping.adapter.ProductsSearchAdapter;
+import it.polito.easyshopping.app.model.Product;
+import it.polito.easyshopping.app.R;
 import it.polito.easyshopping.utils.JsonUtils;
 
 /**

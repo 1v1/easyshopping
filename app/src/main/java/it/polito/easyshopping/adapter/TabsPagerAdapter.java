@@ -4,10 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import it.polito.easyshopping.app.CartFragment;
-import it.polito.easyshopping.app.CatalogueFragment;
-import it.polito.easyshopping.app.MapFragment;
-import it.polito.easyshopping.app.RootCatalogueFragment;
+import it.polito.easyshopping.app.fragments.CartFragment;
+import it.polito.easyshopping.app.fragments.MapFragment;
+import it.polito.easyshopping.app.fragments.RootCatalogueFragment;
 
 /**
  * Created by jessica on 06/05/14.

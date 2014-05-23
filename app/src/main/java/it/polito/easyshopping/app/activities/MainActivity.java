@@ -1,4 +1,4 @@
-package it.polito.easyshopping.app;
+package it.polito.easyshopping.app.activities;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import it.polito.easyshopping.adapter.TabsPagerAdapter;
+import it.polito.easyshopping.app.R;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener{
     private ViewPager viewPager;

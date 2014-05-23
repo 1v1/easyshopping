@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import it.polito.easyshopping.app.Product;
+import it.polito.easyshopping.app.model.Product;
 
 /**
  * Created by jessica on 08/05/14.

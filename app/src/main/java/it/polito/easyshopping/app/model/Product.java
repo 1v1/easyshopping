@@ -1,4 +1,4 @@
-package it.polito.easyshopping.app;
+package it.polito.easyshopping.app.model;
 
 import java.util.ArrayList;
 

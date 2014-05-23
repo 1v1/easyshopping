@@ -1,4 +1,4 @@
-package it.polito.easyshopping.app;
+package it.polito.easyshopping.app.activities;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +14,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import it.polito.easyshopping.app.model.Product;
+import it.polito.easyshopping.app.R;
 import it.polito.easyshopping.utils.JsonUtils;
 
 /**

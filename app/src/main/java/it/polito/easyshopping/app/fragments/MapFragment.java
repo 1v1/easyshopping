@@ -1,4 +1,4 @@
-package it.polito.easyshopping.app;
+package it.polito.easyshopping.app.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,10 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,7 +18,6 @@ import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.DragEvent;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,14 +31,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Map;
 
+import it.polito.easyshopping.app.model.Product;
+import it.polito.easyshopping.app.customviews.ProductView;
+import it.polito.easyshopping.app.activities.ProductsSearchActivity;
+import it.polito.easyshopping.app.R;
+import it.polito.easyshopping.app.customviews.RoomView;
 import it.polito.easyshopping.utils.JsonUtils;
 
 /**
@@ -91,44 +88,50 @@ public class MapFragment extends Fragment {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 ViewGroup layout = (ViewGroup) button.getParent();
-                                if (layout != null) { // for safety only as you are doing onClick
-                                    layout.removeView(button);
-                                    button = null;
+                                DisplayMetrics displaymetrics = new DisplayMetrics();
+                                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                                width = displaymetrics.widthPixels; // screen width
+                                height = displaymetrics.heightPixels; // screen height
 
-                                    DisplayMetrics displaymetrics = new DisplayMetrics();
-                                    getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-                                    width = displaymetrics.widthPixels; // screen width
-                                    height = displaymetrics.heightPixels; // screen height
+                                imageWidth = Float.parseFloat(input_width.getText().toString()); // input room width
+                                imageHeight = Float.parseFloat(input_depth.getText().toString()); // input room height
 
-                                    imageWidth = Float.parseFloat(input_width.getText().toString()); // room width
-                                    imageHeight = Float.parseFloat(input_depth.getText().toString()); // room height
+                                if (!validateSize()) {
+                                    Toast.makeText(getActivity(), "You cannot choose a room size smaller then the products! Try again.",
+                                            Toast.LENGTH_LONG).show();
+                                } else {
+                                    if (layout != null) { // for safety only as you are doing onClick
+                                        layout.removeView(button);
+                                        button = null;
 
-                                    scale = parametrizingDimensions(width, height, imageWidth, imageHeight);
+                                        scale = parametrizingDimensions(width, height, imageWidth, imageHeight);
 
-                                    newHeight = scale*Float.parseFloat(input_depth.getText().toString());
+                                        newHeight = scale * Float.parseFloat(input_depth.getText().toString());
 
-                                    // creating the available space to draw
-                                    //Bitmap bg = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                                    Bitmap image = BitmapFactory.decodeResource(getActivity().getResources(),
-                                            R.drawable.ic_launcher);
+                                        // creating the available space to draw
+                                        //Bitmap bg = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                                        Bitmap image = BitmapFactory.decodeResource(getActivity().getResources(),
+                                                R.drawable.ic_launcher);
 
 
-                                    Bitmap bg = Bitmap.createBitmap(roomLayout.getWidth(), roomLayout.getHeight(), Bitmap.Config.ARGB_8888);
-                                    roomLayout.setBackgroundDrawable(new BitmapDrawable(bg));
+                                        Bitmap bg = Bitmap.createBitmap(roomLayout.getWidth(), roomLayout.getHeight(), Bitmap.Config.ARGB_8888);
+                                        roomLayout.setBackgroundDrawable(new BitmapDrawable(bg));
 
-                                    // creating the rectangle
-                                    Canvas canvas = new Canvas(bg);
-                                    room = new RoomView(getActivity(), width, newHeight);
-                                    room.onDraw(canvas);
+                                        // creating the rectangle
+                                        Canvas canvas = new Canvas(bg);
+                                        room = new RoomView(getActivity(), width, newHeight);
+                                        room.onDraw(canvas);
+                                    }
                                 }
                             }
                         })
                         .setNegativeButton("Cancel",
                                 new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,	int id) {
+                                    public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
                                     }
-                                });
+                                }
+                        );
 
                 // create an alert dialog
                 AlertDialog alertD = alertDialogBuilder.create();
@@ -137,6 +140,18 @@ public class MapFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    private boolean validateSize() {
+        JsonUtils utils = new JsonUtils(getActivity());
+        ArrayList<Product> allProducts = utils.getAllProducts();
+        for (Product prod : allProducts) {
+            if (Float.parseFloat(prod.getWidth()) > imageWidth ||
+                    Float.parseFloat(prod.getDepth()) > imageHeight) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

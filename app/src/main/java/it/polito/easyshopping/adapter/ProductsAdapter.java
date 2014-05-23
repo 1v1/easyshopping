@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import it.polito.easyshopping.app.Product;
+import it.polito.easyshopping.app.model.Product;
 import it.polito.easyshopping.app.R;
 
 /**

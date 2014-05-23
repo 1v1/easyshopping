@@ -1,16 +1,11 @@
-package it.polito.easyshopping.app;
+package it.polito.easyshopping.app.customviews;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import java.io.IOException;
-import java.io.InputStream;
+import it.polito.easyshopping.app.model.Product;
 
 /**
  * Created by jessica on 14/05/14.

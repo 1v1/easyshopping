@@ -1,7 +1,6 @@
 package it.polito.easyshopping.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +13,10 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import it.polito.easyshopping.app.Product;
+import it.polito.easyshopping.app.model.Product;
 import it.polito.easyshopping.app.R;
-import it.polito.easyshopping.utils.JsonUtils;
 
 /**
  * Created by jessica on 09/05/14.

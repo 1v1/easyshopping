@@ -1,10 +1,9 @@
-package it.polito.easyshopping.app;
+package it.polito.easyshopping.app.fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,7 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import it.polito.easyshopping.adapter.CartAdapter;
-import it.polito.easyshopping.utils.JsonUtils;
+import it.polito.easyshopping.app.model.Product;
+import it.polito.easyshopping.app.R;
 
 /**
  * Created by jessica on 06/05/14.

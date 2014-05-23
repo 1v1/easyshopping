@@ -2,14 +2,11 @@ package it.polito.easyshopping.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -18,8 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.polito.easyshopping.app.CatalogueFragment;
-import it.polito.easyshopping.app.Product;
+import it.polito.easyshopping.app.model.Product;
 import it.polito.easyshopping.app.R;
 
 /**

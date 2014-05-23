@@ -1,4 +1,4 @@
-package it.polito.easyshopping.app;
+package it.polito.easyshopping.app.customviews;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import it.polito.easyshopping.app.R;
 
 /**
  * Created by jessica on 15/05/14.
@@ -47,7 +49,7 @@ public class RoomView extends ViewGroup {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    public void onDraw(Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(Color.parseColor("#F4A460"));
         paint.setStyle(Paint.Style.STROKE);

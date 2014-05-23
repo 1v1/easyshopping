@@ -28,6 +28,7 @@ public class CartFragment extends Fragment {
     private Product selectedProduct;
     private ArrayList<Product> products;
     private TextView empty, tv_totalPrice;
+    private RemoveProductReceiver productReceiver;
 
     //declaring receiver of the event when product is removed
     public class RemoveProductReceiver extends BroadcastReceiver {
@@ -52,16 +53,22 @@ public class CartFragment extends Fragment {
             empty.setText("Your basket is empty.");
         }
 
-        //registering receiver of the event when product is removed
-        getActivity().registerReceiver(new RemoveProductReceiver(), new IntentFilter("arrayUpdate"));
-
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        //registering receiver of the event when product is removed
+        productReceiver = new RemoveProductReceiver();
+        getActivity().registerReceiver(productReceiver, new IntentFilter("arrayUpdate"));
         updateListView();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(productReceiver);
     }
 
     private void updateListView() {
@@ -76,16 +83,6 @@ public class CartFragment extends Fragment {
         listView.setAdapter(new CartAdapter(getActivity().getApplicationContext(), products));
         tv_totalPrice.setText("Total price: €" + totalPrice);
     }
-
-//    private boolean checkArray(String productID) {
-//        for(Product prod : products) {
-//            if (prod.getProductID().equals(productID)) {
-//                indexProdToRemove = products.indexOf(prod);
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     private float totalPrice() {
         float totalPrice = 0;

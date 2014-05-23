@@ -7,8 +7,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="desc">ImageView of listview</string>
     <string name="action_search">Search</string>
-    <string name="tv_width">Type the desired width of the room: </string>
-    <string name="tv_depth">Type the desired depth of the room: </string>
+    <string name="tv_width">Type the desired width of the room: (cm)</string>
+    <string name="tv_depth">Type the desired depth of the room: (cm)</string>
     <string name="new_operation">New operation here</string>
     <string name="choose_action">Choose an action: </string>
 </resources>

@@ -99,7 +99,7 @@ public class MapFragment extends Fragment {
                                 if (!validateSize()) {
                                     Toast.makeText(getActivity(), "You cannot choose a room size smaller then the products! Try again.",
                                             Toast.LENGTH_LONG).show();
-                                } else {
+                                }  else {
                                     if (layout != null) { // for safety only as you are doing onClick
                                         layout.removeView(button);
                                         button = null;
@@ -142,6 +142,18 @@ public class MapFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        ArrayList<Product> productsList = Product.getAddedProducts();
+        if (ll.getChildCount() < productsList.size()) {
+            Product selectedProduct = productsList.get(productsList.size()-1);
+            float productWidth = selectedProduct.getScreenWidth(imageWidth, width);
+            float productHeight = selectedProduct.getScreenHight(imageHeight, newHeight);
+            setProductParams(Math.round(productWidth), Math.round(productHeight), selectedProduct);
+        }
+        super.onResume();
+    }
+
     private boolean validateSize() {
         JsonUtils utils = new JsonUtils(getActivity());
         ArrayList<Product> allProducts = utils.getAllProducts();
@@ -152,20 +164,6 @@ public class MapFragment extends Fragment {
             }
         }
         return true;
-    }
-
-    @Override
-    public void onResume() {
-
-        ArrayList<Product> productsList = Product.getAddedProducts();
-
-        if (ll.getChildCount() < productsList.size()) {
-            Product selectedProduct = productsList.get(productsList.size()-1);
-            float productWidth = selectedProduct.getScreenWidth(imageWidth, width);
-            float productHeight = selectedProduct.getScreenHight(imageHeight, newHeight);
-            setProductParams(Math.round(productWidth), Math.round(productHeight), selectedProduct);
-        }
-        super.onResume();
     }
 
     final Handler handler = new Handler();
@@ -181,7 +179,7 @@ public class MapFragment extends Fragment {
     private final class MyTouchListener implements View.OnTouchListener {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                handler.postDelayed(mLongPressed, 1500);
+                handler.postDelayed(mLongPressed, 1000);
 
                 ClipData data = ClipData.newPlainText("", "");
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
@@ -250,13 +248,10 @@ public class MapFragment extends Fragment {
 
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
-                    Log.d("DEBUG", "teste");
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    Log.d("DEBUG", "teste");
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    Log.d("DEBUG", "teste");
                     break;
                 case DragEvent.ACTION_DROP:
                     selectedView = (ProductView) view;
@@ -273,24 +268,16 @@ public class MapFragment extends Fragment {
 
                         //RelativeLayout container = (RelativeLayout) v;
                         ll.addView(view);
-                    } else {
-                        Log.d("DEBUG", "View is outside of the room");
                     }
 
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    Log.d("DEBUG", "teste");
                     break;
                 default:
-                    Log.d("DEBUG", "teste");
                     break;
             }
             view.setVisibility(View.VISIBLE);
             return true;
-        }
-
-        private boolean dropEventNotHandled(DragEvent dragEvent) {
-            return !dragEvent.getResult();
         }
 
         private boolean isViewContains(float x, float y, int sViewHeight) {
@@ -298,7 +285,6 @@ public class MapFragment extends Fragment {
             if (boundary.contains((int) x, (int) y) && (y + sViewHeight/2) <= newHeight)
                 return true;
             return false;
-            //return boundary.contains((int) x, (int) y);
         }
     }
 
@@ -331,6 +317,7 @@ public class MapFragment extends Fragment {
         Bitmap bg = Bitmap.createBitmap(ll.getWidth(), ll.getHeight(), Bitmap.Config.ARGB_8888);
         ll.addView(productView);
         ll.setBackgroundDrawable(new BitmapDrawable(bg));
+
     }
 
     public float parametrizingDimensions(int screenWidth, int screenHeight, float pictureWidth, float pictureDepth) {

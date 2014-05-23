@@ -137,6 +137,20 @@ public class MapFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+
+        ArrayList<Product> productsList = Product.getAddedProducts();
+
+        if (ll.getChildCount() < productsList.size()) {
+            Product selectedProduct = productsList.get(productsList.size()-1);
+            float productWidth = selectedProduct.getScreenWidth(imageWidth, width);
+            float productHeight = selectedProduct.getScreenHight(imageHeight, newHeight);
+            setProductParams(Math.round(productWidth), Math.round(productHeight), selectedProduct);
+        }
+        super.onResume();
+    }
+
     final Handler handler = new Handler();
     Runnable mLongPressed = new Runnable() {
         public void run() {
@@ -148,10 +162,9 @@ public class MapFragment extends Fragment {
 
     // This defines your touch listener
     private final class MyTouchListener implements View.OnTouchListener {
-
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                handler.postDelayed(mLongPressed, 500);
+                handler.postDelayed(mLongPressed, 2000);
 
                 ClipData data = ClipData.newPlainText("", "");
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
@@ -234,7 +247,7 @@ public class MapFragment extends Fragment {
                     eventX = event.getX();
                     eventY = event.getY();
 
-                    if (isViewContains(eventX, eventY)) {
+                    if (isViewContains(eventX, eventY, selectedView.getHeight())) {
                         view.setX(eventX - (view.getWidth()/2));
                         view.setY(eventY - (view.getHeight()/2));
 
@@ -263,24 +276,13 @@ public class MapFragment extends Fragment {
             return !dragEvent.getResult();
         }
 
-        private boolean isViewContains(float x, float y) {
+        private boolean isViewContains(float x, float y, int sViewHeight) {
             Rect boundary = new Rect(0, 0, width, (int) newHeight);
-            return boundary.contains((int) x, (int) y);
+            if (boundary.contains((int) x, (int) y) && (y + sViewHeight/2) <= newHeight)
+                return true;
+            return false;
+            //return boundary.contains((int) x, (int) y);
         }
-    }
-
-    @Override
-    public void onResume() {
-
-        ArrayList<Product> productsList = Product.getAddedProducts();
-
-        if (ll.getChildCount() < productsList.size()) {
-            Product selectedProduct = productsList.get(productsList.size()-1);
-            float productWidth = selectedProduct.getScreenWidth(imageWidth, width);
-            float productHeight = selectedProduct.getScreenHight(imageHeight, newHeight);
-            setProductParams(Math.round(productWidth), Math.round(productHeight), selectedProduct);
-        }
-        super.onResume();
     }
 
     public void setProductParams(int width, int height, Product selectedProduct) {
